@@ -4,6 +4,7 @@
   "description": "implementation of avl tree in javascript",
   "main": "index.js",
   "scripts": {
+    "watch": "webpack --watch",
     "test": "mocha --require @babel/register"
   },
   "author": "Dacre Denny",
@@ -14,6 +15,7 @@
     "@babel/register": "^7.0.0",
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
+    "webpack": "^4.28.1",
     "webpack-cli": "^3.1.2"
   }
 }

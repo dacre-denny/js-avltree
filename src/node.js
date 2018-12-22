@@ -4,7 +4,8 @@ export class Node {
 
         this.left = "";
         this.right = "";
-        this.balance = 0;
-        this.data = "";
+        this.height = 0;
+        this.value = 0;
+        this.parent = "";
     }
 }
