@@ -1,64 +1,86 @@
 import { Node } from "./node";
 
+const nodeLevel = (node) => {
+
+    const heightLeft = node.left ? node.left.height : 0;
+    const heightRight = node.right ? node.right.height : 0;
+    const height = Math.max(heightLeft, heightRight) + 1;
+
+    return height;
+};
+
 const nodeBalance = (node) => {
 
     const nodeLeft = node.left;
     const nodeRight = node.right;
 
-    const balance = (nodeLeft ? nodeLeft.value : 0) - (nodeRight ? nodeRight.value : 0);
+    const balance = (nodeRight ? nodeRight.height : 0) - (nodeLeft ? nodeLeft.height : 0);
     return balance;
 };
 
 function nodeSetLeft(node, newLeft) {
 
-    node.left = newLeft;
-    newLeft.parent = node;
+    if (!node) return;
 
-    node.height = Math.max(node.height, newLeft.height + 1);
+    if (newLeft) {
+        newLeft.parent = node;
+    }
+
+    node.left = newLeft;
 }
 
 function nodeSetRight(node, newRight) {
 
-    node.right = newRight;
-    newRight.parent = node;
+    if (!node) return;
 
-    node.height = Math.max(node.height, newRight.height + 1);
+    if (newRight) {
+        newRight.parent = node;
+    }
+
+    node.right = newRight;
 }
 
 function nodeRotateLeft(node) {
 
     const nodeParent = node.parent;
     const nodeRight = node.right;
-    const nodeRightLeft = node.right.left;
+    const nodeRightLeft = nodeRight ? nodeRight.left : "";
 
-    if (nodeParent.right === node) {
-        nodeSetRight(nodeParent, nodeRight);
-    }
-    else if (nodeParent.left === node) {
-        nodeSetLeft(nodeParent, nodeRight);
+    if (nodeParent) {
+        if (nodeParent.right === node) {
+            nodeSetRight(nodeParent, nodeRight);
+        }
+        else if (nodeParent.left === node) {
+            nodeSetLeft(nodeParent, nodeRight);
+        }
     }
 
     nodeSetLeft(nodeRight, node);
     nodeSetRight(node, nodeRightLeft);
+
+    nodeRight.parent = nodeParent;
 }
 
 function nodeRotateRight(node) {
 
     const nodeParent = node.parent;
     const nodeLeft = node.left;
-    const nodeLeftRight = node.left.right;
+    const nodeLeftRight = nodeLeft ? nodeLeft.right : "";
 
-    if (nodeParent.right === node) {
-        nodeSetRight(nodeParent, nodeLeft);
+    if (nodeParent) {
+        if (nodeParent.right === node) {
+            nodeSetRight(nodeParent, nodeLeft);
+        }
+        else if (nodeParent.left === node) {
+            nodeSetLeft(nodeParent, nodeLeft);
+        }
     }
-    else if (nodeParent.left === node) {
-        nodeSetLeft(nodeParent, nodeLeft);
-    }
+
+    node.parent = nodeParent;
 
     nodeSetRight(nodeLeft, node);
     nodeSetLeft(node, nodeLeftRight);
 }
-
 
 function nodeInsert(node, treeNode) {
 
@@ -66,26 +88,24 @@ function nodeInsert(node, treeNode) {
 
         if (treeNode.left) {
             nodeInsert(node, treeNode.left);
-            treeNode.height++;
         }
         else {
-            treeNode.left = node;
-            node.parent = treeNode;
+            nodeSetLeft(treeNode, node);
         }
     }
     else {
 
         if (treeNode.right) {
             nodeInsert(node, treeNode.right);
-            treeNode.height++;
         }
         else {
-            treeNode.right = node;
-            node.parent = treeNode;
+            nodeSetRight(treeNode, node);
         }
     }
 
-    const balance = nodeBalance(node);
+    treeNode.height = nodeLevel(treeNode);
+
+    const balance = nodeBalance(treeNode);
 
     if (balance < -1) {
         nodeRotateRight(treeNode);
@@ -104,14 +124,21 @@ export class Tree {
     insert(value) {
 
         const newNode = new Node();
+        newNode.height = 1;
         newNode.value = value;
 
         if (this.root) {
             nodeInsert(newNode, this.root);
+
+            for (; this.root.parent; this.root = this.root.parent) {
+                continue;
+            }
         }
         else {
             this.root = newNode;
         }
+
+        return newNode;
     }
 
     remove(value) {
