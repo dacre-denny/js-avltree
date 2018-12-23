@@ -37,6 +37,20 @@ describe("Tree module", () => {
             assert.equal(node1.parent, root);
         });
 
+        it("should ", () => {
+
+            const tree = new Tree();
+            const root = tree.insert(6);
+
+            const node2 = tree.insert(2);
+            const node1 = tree.insert(1);
+            const node4 = tree.insert(4);
+            const node3 = tree.insert(3);
+            const node5 = tree.insert(5);
+            const node7 = tree.insert(7);
+
+        });
+
         it("should insert node to left and node to right of empty root node if root node value between inserted node values", () => {
 
             const tree = new Tree();
