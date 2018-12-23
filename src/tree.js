@@ -76,10 +76,10 @@ function nodeRotateRight(node) {
         }
     }
 
-    node.parent = nodeParent;
-
     nodeSetRight(nodeLeft, node);
     nodeSetLeft(node, nodeLeftRight);
+
+    nodeLeft.parent = nodeParent;
 }
 
 function nodeInsert(node, treeNode) {
