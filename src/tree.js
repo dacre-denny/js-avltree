@@ -58,6 +58,9 @@ function nodeRotateLeft(node) {
     nodeSetLeft(nodeRight, node);
     nodeSetRight(node, nodeRightLeft);
 
+    node.height = nodeLevel(node);
+    nodeRight.height = nodeLevel(nodeRight);
+
     nodeRight.parent = nodeParent;
 }
 
@@ -78,6 +81,9 @@ function nodeRotateRight(node) {
 
     nodeSetRight(nodeLeft, node);
     nodeSetLeft(node, nodeLeftRight);
+
+    node.height = nodeLevel(node);
+    nodeLeft.height = nodeLevel(nodeLeft);
 
     nodeLeft.parent = nodeParent;
 }

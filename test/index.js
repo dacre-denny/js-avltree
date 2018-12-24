@@ -37,19 +37,65 @@ describe("Tree module", () => {
             assert.equal(node1.parent, root);
         });
 
+        it("should perform rebalance on left-left insert into left subtree", () => {
+
+            const tree = new Tree();
+            const root = tree.insert(5);
+            const node4 = tree.insert(4);
+            tree.insert(6);
+
+            const node3 = tree.insert(3);
+            const node2 = tree.insert(2);
+
+            assert.equal(node3, root.left);
+            assert.equal(node3.parent, root);
+
+            assert.equal(node2, node3.left);
+            assert.equal(node2.parent, node3);
+
+            assert.equal(node4, node3.right);
+            assert.equal(node4.parent, node3);
+        });
+
+        it("should perform rebalance on left-right insert into left subtree", () => {
+
+            const tree = new Tree();
+            const root = tree.insert(5);
+            const node4 = tree.insert(4);
+            tree.insert(6);
+
+            const node2 = tree.insert(2);
+            const node3 = tree.insert(3);
+
+            assert.equal(node2, root.left);
+            assert.equal(node2.parent, root);
+
+            assert.equal(node4, node2.right);
+            assert.equal(node4.parent, node2);
+
+            assert.equal(node3, node2.left);
+            assert.equal(node3.parent, node2);
+        });
+
+        /*
         it("should ", () => {
 
             const tree = new Tree();
-            const root = tree.insert(6);
+            const root = tree.insert(1);
 
-            const node2 = tree.insert(2);
-            const node1 = tree.insert(1);
-            const node4 = tree.insert(4);
-            const node3 = tree.insert(3);
-            const node5 = tree.insert(5);
-            const node7 = tree.insert(7);
+            tree.insert(2);
+            tree.insert(3);
+            tree.insert(4);
+            tree.insert(5);
+            tree.insert(6);
+            tree.insert(7);
+            tree.insert(8);
+            tree.insert(9);
+            tree.insert(10);
 
+            tree.insert(7.5);
         });
+        */
 
         it("should insert node to left and node to right of empty root node if root node value between inserted node values", () => {
 
