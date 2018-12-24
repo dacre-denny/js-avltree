@@ -70,22 +70,53 @@ function nodeRotateRight(node) {
     const nodeLeft = node.left;
     const nodeLeftRight = nodeLeft ? nodeLeft.right : "";
 
-    if (nodeParent) {
-        if (nodeParent.right === node) {
-            nodeSetRight(nodeParent, nodeLeft);
+    if (nodeLeftRight) {
+
+        // double rotation case
+
+        if (nodeParent) {
+            if (nodeParent.right === node) {
+                nodeSetRight(nodeParent, nodeLeftRight);
+            }
+            else if (nodeParent.left === node) {
+                nodeSetLeft(nodeParent, nodeLeftRight);
+            }
         }
-        else if (nodeParent.left === node) {
-            nodeSetLeft(nodeParent, nodeLeft);
+
+        nodeSetRight(nodeLeft, nodeLeftRight.left);
+        nodeSetLeft(node, nodeLeftRight.right);
+
+        nodeSetRight(nodeLeftRight, node);
+        nodeSetLeft(nodeLeftRight, nodeLeft);
+
+        nodeLeft.height = nodeLevel(nodeLeft);
+        node.height = nodeLevel(node);
+        nodeLeftRight.height = nodeLevel(nodeLeftRight);
+
+        nodeLeftRight.parent = nodeParent;
+    }
+    else {
+
+        // single rotation case
+
+        if (nodeParent) {
+            if (nodeParent.right === node) {
+                nodeSetRight(nodeParent, nodeLeft);
+            }
+            else if (nodeParent.left === node) {
+                nodeSetLeft(nodeParent, nodeLeft);
+            }
         }
+
+        nodeSetRight(nodeLeft, node);
+        nodeSetLeft(node, nodeLeftRight);
+
+        node.height = nodeLevel(node);
+        nodeLeft.height = nodeLevel(nodeLeft);
+
+        nodeLeft.parent = nodeParent;
     }
 
-    nodeSetRight(nodeLeft, node);
-    nodeSetLeft(node, nodeLeftRight);
-
-    node.height = nodeLevel(node);
-    nodeLeft.height = nodeLevel(nodeLeft);
-
-    nodeLeft.parent = nodeParent;
 }
 
 function nodeInsert(node, treeNode) {
