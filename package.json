@@ -4,6 +4,7 @@
   "description": "implementation of avl tree in javascript",
   "main": "index.js",
   "scripts": {
+    "demo": "node ./dist/bundle.js",
     "watch": "webpack --watch",
     "test": "mocha --require @babel/register"
   },
