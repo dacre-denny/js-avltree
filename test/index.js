@@ -77,6 +77,46 @@ describe("Tree module", () => {
             assert.equal(node2.parent, node3);
         });
 
+        it("should perform single rotation on right-right insert into right subtree", () => {
+
+            const tree = new Tree();
+            const root = tree.insert(5);
+            const node6 = tree.insert(6);
+            tree.insert(4);
+
+            const node7 = tree.insert(7);
+            const node8 = tree.insert(8);
+
+            assert.equal(node7, root.right);
+            assert.equal(node7.parent, root);
+
+            assert.equal(node6, node7.left);
+            assert.equal(node6.parent, node7);
+
+            assert.equal(node8, node7.right);
+            assert.equal(node8.parent, node7);
+        });
+
+        it("should perform double rotation on left-right insert into left subtree", () => {
+
+            const tree = new Tree();
+            const root = tree.insert(5);
+            tree.insert(4);
+            const node6 = tree.insert(6);
+
+            const node8 = tree.insert(8);
+            const node7 = tree.insert(7);
+
+            assert.equal(node7, root.right);
+            assert.equal(node7.parent, root);
+
+            assert.equal(node8, node7.right);
+            assert.equal(node8.parent, node7);
+
+            assert.equal(node6, node7.left);
+            assert.equal(node6.parent, node7);
+        });
+
         it("should insert node to left and node to right of empty root node if root node value between inserted node values", () => {
 
             const tree = new Tree();
