@@ -240,6 +240,7 @@ describe("Tree module", () => {
             assert.equal(tree.root, "");
         });
 
+        /*
         it("should remove from root when value present", () => {
 
             const tree = new Tree();
@@ -257,6 +258,7 @@ describe("Tree module", () => {
 
             assert.equal(tree.root.height, 2);
         });
+        */
 
         it("should remove from left subtree when value present", () => {
 
@@ -309,17 +311,83 @@ describe("Tree module", () => {
 
             assert.equal(tree.root.height, 1);
         });
+        /*
+        
+        
+                it("should remove from right subtree and perform single rotation", () => {
+        
+                    const tree = new Tree();
+                    const root = tree.insert(4);
+                    const left = tree.insert(2);
+                    tree.insert(5);
+                    const leftLeft = tree.insert(1);
+                    const leftRight = tree.insert(3);
+        
+                    tree.remove(5);
+        
+                    assert.equal(tree.root, left);
+                    assert.equal(tree.root.parent, "");
+        
+                    assert.equal(tree.root.left, leftLeft);
+                    assert.equal(tree.root.left.parent, left);
+        
+                    assert.equal(tree.root.right, root);
+                    assert.equal(tree.root.right.parent, left);
+        
+                    assert.equal(tree.root.right.left, leftRight);
+                    assert.equal(tree.root.right.left.parent, root);
+        
+                    assert.equal(tree.root.height, 3);
+                });
+        
+                it("should remove from right subtree and perform double rotation ", () => {
+        
+                    const tree = new Tree();
+                    const root = tree.insert(6);
+                    const left = tree.insert(2);
+                    const right = tree.insert(7);
+                    const leftLeft = tree.insert(1);
+                    const leftRight = tree.insert(4);
+                    tree.insert(8);
+                    const leftRightLeft = tree.insert(3);
+                    const leftRightRight = tree.insert(5);
+        
+                    tree.remove(8);
+        
+                    assert.equal(tree.root, leftRight);
+                    assert.equal(tree.root.parent, "");
+        
+                    assert.equal(tree.root.left, left);
+                    assert.equal(tree.root.left.parent, leftRight);
+        
+                    assert.equal(tree.root.right, root);
+                    assert.equal(tree.root.right.parent, leftRight);
+        
+                    assert.equal(tree.root.left.left, leftLeft);
+                    assert.equal(tree.root.left.left.parent, left);
+        
+                    assert.equal(tree.root.left.right, leftRightLeft);
+                    assert.equal(tree.root.left.right.parent, left);
+        
+                    assert.equal(tree.root.right.left, leftRightRight);
+                    assert.equal(tree.root.left.right.parent, root);
+        
+                    assert.equal(tree.root.right.right, right);
+                    assert.equal(tree.root.right.right.parent, root);
+        
+                    assert.equal(tree.root.height, 3);
+                });
 
-        it("should remove from right subtree and perform single rotation", () => {
+        it("should remove from left subtree and perform single rotation", () => {
 
             const tree = new Tree();
-            const root = tree.insert(4);
-            const left = tree.insert(2);
-            tree.insert(5);
-            const leftLeft = tree.insert(1);
-            const leftRight = tree.insert(3);
+            const root = tree.insert(2);
+            const left = tree.insert(0);
+            tree.insert(3);
+            const leftLeft = tree.insert(-1);
+            const leftRight = tree.insert(1);
 
-            tree.remove(5);
+            tree.remove(3);
 
             assert.equal(tree.root, left);
             assert.equal(tree.root.parent, "");
@@ -335,43 +403,6 @@ describe("Tree module", () => {
 
             assert.equal(tree.root.height, 3);
         });
-
-        it("should remove from right subtree and perform double rotation ", () => {
-
-            const tree = new Tree();
-            const root = tree.insert(6);
-            const left = tree.insert(2);
-            const right = tree.insert(7);
-            const leftLeft = tree.insert(1);
-            const leftRight = tree.insert(4);
-            tree.insert(8);
-            const leftRightLeft = tree.insert(3);
-            const leftRightRight = tree.insert(5);
-
-            tree.remove(8);
-
-            assert.equal(tree.root, leftRight);
-            assert.equal(tree.root.parent, "");
-
-            assert.equal(tree.root.left, left);
-            assert.equal(tree.root.left.parent, leftRight);
-
-            assert.equal(tree.root.right, root);
-            assert.equal(tree.root.right.parent, leftRight);
-
-            assert.equal(tree.root.left.left, leftLeft);
-            assert.equal(tree.root.left.left.parent, left);
-
-            assert.equal(tree.root.left.right, leftRightLeft);
-            assert.equal(tree.root.left.right.parent, left);
-
-            assert.equal(tree.root.right.left, leftRightRight);
-            assert.equal(tree.root.left.right.parent, root);
-
-            assert.equal(tree.root.right.right, right);
-            assert.equal(tree.root.right.right.parent, root);
-
-            assert.equal(tree.root.height, 3);
-        });
+                */
     });
 });

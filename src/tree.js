@@ -183,6 +183,56 @@ function nodeInsert(node, treeNode) {
     }
 }
 
+function nodeReplace(node, replacement) {
+
+    if (!node) return;
+
+    const { parent } = node;
+
+    if (parent) {
+
+        if (parent.right === node) {
+            nodeSetRight(parent, replacement);
+        }
+        else if (parent.left === node) {
+            nodeSetLeft(parent, replacement);
+        }
+
+        if (replacement) {
+            replacement.parent = parent;
+        }
+    }
+}
+
+function nodeRemove(node) {
+
+    if (node.right) {
+
+        // find next value node which will replace this, search till last left most child
+        // from node right
+        let nextValueNode = node.right;
+        for (; nextValueNode !== ""; nextValueNode = nextValueNode.left) { continue; }
+
+        // set right node of nextValueNode if it exists as left child of nvn parent
+        nodeReplace(nextValueNode, nextValueNode.right);
+
+        // repace node being removed with next value node
+        nodeReplace(node, nextValueNode);
+
+        // left left/right children of replacement node to those of node being replaced
+        nodeSetLeft(nextValueNode, node.left);
+        nodeSetRight(nextValueNode, node.right);
+    }
+    else if (node.left) {
+
+        nodeReplace(node, node.left);
+    }
+    else {
+
+        nodeReplace(node, "");
+    }
+}
+
 export class Tree {
 
     constructor() {
@@ -211,6 +261,18 @@ export class Tree {
 
     remove(value) {
 
+        const node = this.find(value);
+
+        if (this.root === node) {
+            if (!node.left && !node.right) {
+                this.root = "";
+                return;
+            }
+        }
+        else {
+
+            nodeRemove(node);
+        }
     }
 
     find(value) {
