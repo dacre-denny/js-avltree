@@ -140,4 +140,181 @@ describe("Tree module", () => {
             assert.equal(tree.root.height, 3);
         });
     });
+
+    describe("remove", () => {
+
+        it("should do nothing when tree empty", () => {
+
+            const tree = new Tree();
+
+            tree.remove(1);
+
+            assert.equal(tree.root, "");
+        });
+
+        it("should do nothing when value not present", () => {
+
+            const tree = new Tree();
+            const root = tree.insert(2);
+            const left = tree.insert(1);
+            const right = tree.insert(3);
+
+            tree.remove(4);
+
+            assert.equal(tree.root.parent, "");
+            assert.equal(tree.root, root);
+
+            assert.equal(tree.root.left, left);
+            assert.equal(tree.root, left.parent);
+
+            assert.equal(tree.root.right, right);
+            assert.equal(tree.root, right.parent);
+
+            assert.equal(tree.root.height, 2);
+        });
+
+        it("should remove root value when only value present resulting in empty tree", () => {
+
+            const tree = new Tree();
+            tree.insert(1);
+
+            tree.remove(1);
+
+            assert.equal(tree.root, "");
+        });
+
+        it("should remove left value when present", () => {
+
+            const tree = new Tree();
+            tree.insert(1);
+            tree.insert(0);
+            const right = tree.insert(2);
+
+            tree.remove(0);
+
+            assert.equal(tree.root.left, "");
+
+            assert.equal(tree.root.right, right);
+            assert.equal(tree.root, right.parent);
+
+            assert.equal(tree.root.height, 2);
+        });
+
+        it("should remove right value when present", () => {
+
+            const tree = new Tree();
+            tree.insert(1);
+            const left = tree.insert(0);
+            tree.insert(2);
+
+            tree.remove(2);
+
+            assert.equal(tree.root.right, "");
+
+            assert.equal(tree.root.left, left);
+            assert.equal(tree.root, left.parent);
+
+            assert.equal(tree.root.height, 2);
+        });
+
+        it("should remove root value when present", () => {
+
+            const tree = new Tree();
+            tree.insert(1);
+            const left = tree.insert(0);
+            const right = tree.insert(2);
+
+            tree.remove(1);
+
+            assert.equal(tree.root, left);
+            assert.equal(tree.root.parent, "");
+
+            assert.equal(tree.root.right, right);
+            assert.equal(tree.root, right.parent);
+
+            assert.equal(tree.root.height, 2);
+        });
+
+        it("should remove left value and right value and decrease root height when values present", () => {
+
+            const tree = new Tree();
+            tree.insert(1);
+            tree.insert(0);
+            tree.insert(2);
+
+            assert.equal(tree.root.height, 2);
+
+            tree.remove(0);
+            tree.remove(2);
+
+            assert.equal(tree.root.left, "");
+            assert.equal(tree.root.right, "");
+
+            assert.equal(tree.root.height, 1);
+        });
+
+        it("should perform single rotation on right remove from right subtree", () => {
+
+            const tree = new Tree();
+            const root = tree.insert(4);
+            const left = tree.insert(2);
+            tree.insert(5);
+            const leftLeft = tree.insert(1);
+            const leftRight = tree.insert(3);
+
+            tree.remove(5);
+
+            assert.equal(tree.root, left);
+            assert.equal(tree.root.parent, "");
+
+            assert.equal(tree.root.left, leftLeft);
+            assert.equal(tree.root.left.parent, left);
+
+            assert.equal(tree.root.right, root);
+            assert.equal(tree.root.right.parent, left);
+
+            assert.equal(tree.root.right.left, leftRight);
+            assert.equal(tree.root.right.left.parent, root);
+
+            assert.equal(tree.root.height, 2);
+        });
+
+        it("should perform double rotation on right remove from right subtree", () => {
+
+            const tree = new Tree();
+            const root = tree.insert(6);
+            const left = tree.insert(2);
+            const right = tree.insert(7);
+            const leftLeft = tree.insert(1);
+            const leftRight = tree.insert(4);
+            tree.insert(8);
+            const leftRightLeft = tree.insert(3);
+            const leftRightRight = tree.insert(5);
+
+            tree.remove(8);
+
+            assert.equal(tree.root, leftRight);
+            assert.equal(tree.root.parent, "");
+
+            assert.equal(tree.root.left, left);
+            assert.equal(tree.root.left.parent, leftRight);
+
+            assert.equal(tree.root.right, root);
+            assert.equal(tree.root.right.parent, leftRight);
+
+            assert.equal(tree.root.left.left, leftLeft);
+            assert.equal(tree.root.left.left.parent, left);
+
+            assert.equal(tree.root.left.right, leftRightLeft);
+            assert.equal(tree.root.left.right.parent, left);
+
+            assert.equal(tree.root.right.left, leftRightRight);
+            assert.equal(tree.root.left.right.parent, root);
+
+            assert.equal(tree.root.right.right, right);
+            assert.equal(tree.root.right.right.parent, root);
+
+            assert.equal(tree.root.height, 3);
+        });
+    });
 });
