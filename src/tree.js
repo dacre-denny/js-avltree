@@ -213,7 +213,23 @@ export class Tree {
 
     }
 
-    find(callback) {
+    find(value) {
 
+        if (value === undefined) {
+            return;
+        }
+
+        for (let node = this.root; node !== "";) {
+
+            if (node.value === value) {
+                return node;
+            }
+            else if (value < node.value) {
+                node = node.left;
+            }
+            else {
+                node = node.right;
+            }
+        }
     }
 }

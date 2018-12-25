@@ -3,9 +3,9 @@ var { Tree } = require("../src/tree");
 
 describe("Tree module", () => {
 
-    describe("insert behaviour", () => {
+    describe("insert", () => {
 
-        it("should insert node at root of empty tree", () => {
+        it("should insert first value at root of empty tree", () => {
 
             const tree = new Tree();
 
@@ -16,7 +16,7 @@ describe("Tree module", () => {
             assert.equal(tree.root.height, 1);
         });
 
-        it("should right insert if value greater than root value", () => {
+        it("should insert into right subtree if value greater than first value", () => {
 
             const tree = new Tree();
             tree.insert(1);
@@ -28,7 +28,7 @@ describe("Tree module", () => {
             assert.equal(tree.root.height, 2);
         });
 
-        it("should left insert if value less than root value", () => {
+        it("should insert into left subtree if value less than first value", () => {
 
             const tree = new Tree();
             tree.insert(2);
@@ -40,7 +40,7 @@ describe("Tree module", () => {
             assert.equal(tree.root.height, 2);
         });
 
-        it("should left insert if value less than root value and right insert if value greater than root value", () => {
+        it("should insert into left subtree if value less than first value and insert to right subtree if value greater than first value", () => {
 
             const tree = new Tree();
             tree.insert(2);
@@ -56,7 +56,7 @@ describe("Tree module", () => {
             assert.equal(tree.root.height, 2);
         });
 
-        it("should perform single rotation on left-left insert into left subtree", () => {
+        it("should insert into left-left subtree and perform single rotation", () => {
 
             const tree = new Tree();
             tree.insert(5);
@@ -77,7 +77,7 @@ describe("Tree module", () => {
             assert.equal(tree.root.height, 3);
         });
 
-        it("should perform double rotation on left-right insert into left subtree", () => {
+        it("should insert into left-right subtree and perform double rotation", () => {
 
             const tree = new Tree();
             tree.insert(5);
@@ -98,7 +98,7 @@ describe("Tree module", () => {
             assert.equal(tree.root.height, 3);
         });
 
-        it("should perform single rotation on right-right insert into right subtree", () => {
+        it("should insert into right-right subtree and perform single rotation", () => {
 
             const tree = new Tree();
             tree.insert(5);
@@ -119,7 +119,7 @@ describe("Tree module", () => {
             assert.equal(tree.root.height, 3);
         });
 
-        it("should perform double rotation on right-left insert into right subtree", () => {
+        it("should insert into right-left subtree and perform double rotation", () => {
 
             const tree = new Tree();
             tree.insert(5);
@@ -138,6 +138,63 @@ describe("Tree module", () => {
             assert.equal(right, rightRightLeft.left);
             assert.equal(right.parent, rightRightLeft);
             assert.equal(tree.root.height, 3);
+        });
+    });
+
+    describe("find", () => {
+
+        it("should return undefined if no value provided", () => {
+
+            const tree = new Tree();
+
+            tree.insert(1);
+            tree.insert(2);
+            tree.insert(3);
+            tree.insert(4);
+            tree.insert(5);
+            tree.insert(6);
+
+            assert.isUndefined(tree.find());
+        });
+
+        it("should return undefined if tree empty", () => {
+
+            const tree = new Tree();
+
+            assert.isUndefined(tree.find(1));
+        });
+
+        it("should return undefined if value not present", () => {
+
+            const tree = new Tree();
+
+            tree.insert(1);
+            tree.insert(2);
+            tree.insert(3);
+            tree.insert(4);
+            tree.insert(5);
+            tree.insert(6);
+
+            assert.isUndefined(tree.find(7));
+        });
+
+        it("should return node if value present", () => {
+
+            const tree = new Tree();
+
+            tree.insert(1);
+            tree.insert(2);
+            tree.insert(3);
+            tree.insert(4);
+            tree.insert(5);
+            tree.insert(6);
+
+            assert.isDefined(tree.find(1));
+            assert.isDefined(tree.find(2));
+            assert.isDefined(tree.find(3));
+            assert.isDefined(tree.find(4));
+            assert.isDefined(tree.find(5));
+            assert.isDefined(tree.find(6));
         });
     });
 
@@ -173,7 +230,7 @@ describe("Tree module", () => {
             assert.equal(tree.root.height, 2);
         });
 
-        it("should remove root value when only value present resulting in empty tree", () => {
+        it("should remove from root and produce empty tree when only value present", () => {
 
             const tree = new Tree();
             tree.insert(1);
@@ -183,41 +240,7 @@ describe("Tree module", () => {
             assert.equal(tree.root, "");
         });
 
-        it("should remove left value when present", () => {
-
-            const tree = new Tree();
-            tree.insert(1);
-            tree.insert(0);
-            const right = tree.insert(2);
-
-            tree.remove(0);
-
-            assert.equal(tree.root.left, "");
-
-            assert.equal(tree.root.right, right);
-            assert.equal(tree.root, right.parent);
-
-            assert.equal(tree.root.height, 2);
-        });
-
-        it("should remove right value when present", () => {
-
-            const tree = new Tree();
-            tree.insert(1);
-            const left = tree.insert(0);
-            tree.insert(2);
-
-            tree.remove(2);
-
-            assert.equal(tree.root.right, "");
-
-            assert.equal(tree.root.left, left);
-            assert.equal(tree.root, left.parent);
-
-            assert.equal(tree.root.height, 2);
-        });
-
-        it("should remove root value when present", () => {
+        it("should remove from root when value present", () => {
 
             const tree = new Tree();
             tree.insert(1);
@@ -235,7 +258,41 @@ describe("Tree module", () => {
             assert.equal(tree.root.height, 2);
         });
 
-        it("should remove left value and right value and decrease root height when values present", () => {
+        it("should remove from left subtree when value present", () => {
+
+            const tree = new Tree();
+            tree.insert(1);
+            tree.insert(0);
+            const right = tree.insert(2);
+
+            tree.remove(0);
+
+            assert.equal(tree.root.left, "");
+
+            assert.equal(tree.root.right, right);
+            assert.equal(tree.root, right.parent);
+
+            assert.equal(tree.root.height, 2);
+        });
+
+        it("should remove from right subtree when value present", () => {
+
+            const tree = new Tree();
+            tree.insert(1);
+            const left = tree.insert(0);
+            tree.insert(2);
+
+            tree.remove(2);
+
+            assert.equal(tree.root.right, "");
+
+            assert.equal(tree.root.left, left);
+            assert.equal(tree.root, left.parent);
+
+            assert.equal(tree.root.height, 2);
+        });
+
+        it("should remove from left substree and right substree and decrease root height when values present", () => {
 
             const tree = new Tree();
             tree.insert(1);
@@ -253,7 +310,7 @@ describe("Tree module", () => {
             assert.equal(tree.root.height, 1);
         });
 
-        it("should perform single rotation on right remove from right subtree", () => {
+        it("should remove from right subtree and perform single rotation", () => {
 
             const tree = new Tree();
             const root = tree.insert(4);
@@ -276,10 +333,10 @@ describe("Tree module", () => {
             assert.equal(tree.root.right.left, leftRight);
             assert.equal(tree.root.right.left.parent, root);
 
-            assert.equal(tree.root.height, 2);
+            assert.equal(tree.root.height, 3);
         });
 
-        it("should perform double rotation on right remove from right subtree", () => {
+        it("should remove from right subtree and perform double rotation ", () => {
 
             const tree = new Tree();
             const root = tree.insert(6);
