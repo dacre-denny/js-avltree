@@ -157,23 +157,31 @@ function nodeRotateRight(node) {
 
 }
 
-function nodeInsert(node, treeNode) {
+function nodeInsert(treeNode, value) {
 
-    if (node.value <= treeNode.value) {
+    let node;
+
+    if (value <= treeNode.value) {
 
         if (treeNode.left) {
-            nodeInsert(node, treeNode.left);
+            node = nodeInsert(treeNode.left, value);
         }
         else {
+            node = new Node();
+            node.height = 1;
+            node.value = value;
             nodeSetLeft(treeNode, node);
         }
     }
     else {
 
         if (treeNode.right) {
-            nodeInsert(node, treeNode.right);
+            node = nodeInsert(treeNode.right, value);
         }
         else {
+            node = new Node();
+            node.height = 1;
+            node.value = value;
             nodeSetRight(treeNode, node);
         }
     }
@@ -188,6 +196,8 @@ function nodeInsert(node, treeNode) {
     else if (balance > 1) {
         nodeRotateLeft(treeNode);
     }
+
+    return node;
 }
 
 function nodeReplace(node, replacement) {
@@ -272,22 +282,21 @@ export class Tree {
 
     insert(value) {
 
-        const newNode = new Node();
-        newNode.height = 1;
-        newNode.value = value;
-
         if (this.root) {
-            nodeInsert(newNode, this.root);
+            const node = nodeInsert(this.root, value);
 
             for (; this.root.parent; this.root = this.root.parent) {
                 continue;
             }
+
+            return node;
         }
         else {
-            this.root = newNode;
+            this.root = new Node();
+            this.root.height = 1;
+            this.root.value = value;
+            return this.root;
         }
-
-        return newNode;
     }
 
     remove(value) {
