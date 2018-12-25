@@ -9,6 +9,13 @@ const nodeLevel = (node) => {
     return height;
 };
 
+const nodeUpdateLevel = (node) => {
+
+    if (!node) { return; }
+
+    node.height = nodeLevel(node);
+};
+
 const nodeBalance = (node) => {
 
     const nodeLeft = node.left;
@@ -171,7 +178,7 @@ function nodeInsert(node, treeNode) {
         }
     }
 
-    treeNode.height = nodeLevel(treeNode);
+    nodeUpdateLevel(treeNode);
 
     const balance = nodeBalance(treeNode);
 
@@ -204,32 +211,56 @@ function nodeReplace(node, replacement) {
     }
 }
 
-function nodeRemove(node) {
+function nodeRemove(treeNode, value) {
 
-    if (node.right) {
-
-        // find next value node which will replace this, search till last left most child
-        // from node right
-        let nextValueNode = node.right;
-        for (; nextValueNode !== ""; nextValueNode = nextValueNode.left) { continue; }
-
-        // set right node of nextValueNode if it exists as left child of nvn parent
-        nodeReplace(nextValueNode, nextValueNode.right);
-
-        // repace node being removed with next value node
-        nodeReplace(node, nextValueNode);
-
-        // left left/right children of replacement node to those of node being replaced
-        nodeSetLeft(nextValueNode, node.left);
-        nodeSetRight(nextValueNode, node.right);
+    if (!treeNode) {
+        return;
     }
-    else if (node.left) {
 
-        nodeReplace(node, node.left);
+    if (treeNode.value === value) {
+
+        if (treeNode.right) {
+
+            // find next value node which will replace this, search till last left most child
+            // from node right
+            let nextValueNode = treeNode.right;
+            for (; nextValueNode !== ""; nextValueNode = nextValueNode.left) { continue; }
+
+            // set right node of nextValueNode if it exists as left child of nvn parent
+            nodeReplace(nextValueNode, nextValueNode.right);
+
+            // repace node being removed with next value node
+            nodeReplace(treeNode, nextValueNode);
+
+            // left left/right children of replacement node to those of node being replaced
+            nodeSetLeft(nextValueNode, treeNode.left);
+            nodeSetRight(nextValueNode, treeNode.right);
+        }
+        else if (treeNode.left) {
+
+            nodeReplace(treeNode, treeNode.left);
+        }
+        else {
+
+            nodeReplace(treeNode, "");
+        }
+    }
+    else if (value <= treeNode.value) {
+        nodeRemove(treeNode.left, value);
     }
     else {
+        nodeRemove(treeNode.right, value);
+    }
 
-        nodeReplace(node, "");
+    nodeUpdateLevel(treeNode);
+
+    const balance = nodeBalance(treeNode);
+
+    if (balance < -1) {
+        nodeRotateRight(treeNode);
+    }
+    else if (balance > 1) {
+        nodeRotateLeft(treeNode);
     }
 }
 
@@ -261,17 +292,17 @@ export class Tree {
 
     remove(value) {
 
-        const node = this.find(value);
+        if (this.root) {
 
-        if (this.root === node) {
-            if (!node.left && !node.right) {
-                this.root = "";
-                return;
+            if (this.root.value === value) {
+
+                if (!this.root.left && !this.root.right) {
+                    this.root = "";
+                    return;
+                }
             }
-        }
-        else {
 
-            nodeRemove(node);
+            nodeRemove(this.root, value);
         }
     }
 
