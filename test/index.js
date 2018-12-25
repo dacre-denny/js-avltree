@@ -5,168 +5,139 @@ describe("Tree module", () => {
 
     describe("insert behaviour", () => {
 
-        it("should insert first node into an empty tree at root", () => {
+        it("should insert node at root of empty tree", () => {
 
             const tree = new Tree();
 
-            const node1 = tree.insert(1);
-
-            assert.equal(node1, tree.root);
-            assert.equal(node1.parent, "");
-        });
-
-        it("should insert node to right of empty root node if value greater than root value", () => {
-
-            const tree = new Tree();
             const root = tree.insert(1);
 
-            const node2 = tree.insert(2);
-
-            assert.equal(node2, root.right);
-            assert.equal(node2.parent, root);
+            assert.equal(root, tree.root);
+            assert.equal(root.parent, "");
+            assert.equal(tree.root.height, 1);
         });
 
-        it("should insert node to left of empty root node if value less than root value", () => {
+        it("should right insert if value greater than root value", () => {
 
             const tree = new Tree();
-            const root = tree.insert(2);
+            tree.insert(1);
 
-            const node1 = tree.insert(1);
+            const right = tree.insert(2);
 
-            assert.equal(node1, root.left);
-            assert.equal(node1.parent, root);
+            assert.equal(right, tree.root.right);
+            assert.equal(right.parent, tree.root);
+            assert.equal(tree.root.height, 2);
+        });
+
+        it("should left insert if value less than root value", () => {
+
+            const tree = new Tree();
+            tree.insert(2);
+
+            const left = tree.insert(1);
+
+            assert.equal(left, tree.root.left);
+            assert.equal(left.parent, tree.root);
+            assert.equal(tree.root.height, 2);
+        });
+
+        it("should left insert if value less than root value and right insert if value greater than root value", () => {
+
+            const tree = new Tree();
+            tree.insert(2);
+
+            const left = tree.insert(1);
+            const right = tree.insert(3);
+
+            assert.equal(left, tree.root.left);
+            assert.equal(left.parent, tree.root);
+
+            assert.equal(right, tree.root.right);
+            assert.equal(right.parent, tree.root);
+            assert.equal(tree.root.height, 2);
         });
 
         it("should perform single rotation on left-left insert into left subtree", () => {
 
             const tree = new Tree();
-            const root = tree.insert(5);
-            const node4 = tree.insert(4);
+            tree.insert(5);
+            const left = tree.insert(4);
             tree.insert(6);
 
-            const node3 = tree.insert(3);
-            const node2 = tree.insert(2);
+            const leftRight = tree.insert(3);
+            const leftLeft = tree.insert(2);
 
-            assert.equal(node3, root.left);
-            assert.equal(node3.parent, root);
+            assert.equal(leftRight, tree.root.left);
+            assert.equal(leftRight.parent, tree.root);
 
-            assert.equal(node2, node3.left);
-            assert.equal(node2.parent, node3);
+            assert.equal(leftLeft, leftRight.left);
+            assert.equal(leftLeft.parent, leftRight);
 
-            assert.equal(node4, node3.right);
-            assert.equal(node4.parent, node3);
+            assert.equal(left, leftRight.right);
+            assert.equal(left.parent, leftRight);
+            assert.equal(tree.root.height, 3);
         });
 
         it("should perform double rotation on left-right insert into left subtree", () => {
 
             const tree = new Tree();
-            const root = tree.insert(5);
-            const node4 = tree.insert(4);
+            tree.insert(5);
+            const left = tree.insert(4);
             tree.insert(6);
 
-            const node2 = tree.insert(2);
-            const node3 = tree.insert(3);
+            const leftLeft = tree.insert(2);
+            const leftRight = tree.insert(3);
 
-            assert.equal(node3, root.left);
-            assert.equal(node3.parent, root);
+            assert.equal(leftRight, tree.root.left);
+            assert.equal(leftRight.parent, tree.root);
 
-            assert.equal(node4, node3.right);
-            assert.equal(node4.parent, node3);
+            assert.equal(left, leftRight.right);
+            assert.equal(left.parent, leftRight);
 
-            assert.equal(node2, node3.left);
-            assert.equal(node2.parent, node3);
+            assert.equal(leftLeft, leftRight.left);
+            assert.equal(leftLeft.parent, leftRight);
+            assert.equal(tree.root.height, 3);
         });
 
         it("should perform single rotation on right-right insert into right subtree", () => {
 
             const tree = new Tree();
-            const root = tree.insert(5);
-            const node6 = tree.insert(6);
+            tree.insert(5);
+            const right = tree.insert(6);
             tree.insert(4);
 
-            const node7 = tree.insert(7);
-            const node8 = tree.insert(8);
+            const rightRight = tree.insert(7);
+            const rightRightRight = tree.insert(8);
 
-            assert.equal(node7, root.right);
-            assert.equal(node7.parent, root);
+            assert.equal(rightRight, tree.root.right);
+            assert.equal(rightRight.parent, tree.root);
 
-            assert.equal(node6, node7.left);
-            assert.equal(node6.parent, node7);
+            assert.equal(right, rightRight.left);
+            assert.equal(right.parent, rightRight);
 
-            assert.equal(node8, node7.right);
-            assert.equal(node8.parent, node7);
+            assert.equal(rightRightRight, rightRight.right);
+            assert.equal(rightRightRight.parent, rightRight);
+            assert.equal(tree.root.height, 3);
         });
 
-        it("should perform double rotation on left-right insert into left subtree", () => {
+        it("should perform double rotation on right-left insert into right subtree", () => {
 
             const tree = new Tree();
-            const root = tree.insert(5);
+            tree.insert(5);
             tree.insert(4);
-            const node6 = tree.insert(6);
+            const right = tree.insert(6);
 
-            const node8 = tree.insert(8);
-            const node7 = tree.insert(7);
+            const rightRight = tree.insert(8);
+            const rightRightLeft = tree.insert(7);
 
-            assert.equal(node7, root.right);
-            assert.equal(node7.parent, root);
+            assert.equal(rightRightLeft, tree.root.right);
+            assert.equal(rightRightLeft.parent, tree.root);
 
-            assert.equal(node8, node7.right);
-            assert.equal(node8.parent, node7);
+            assert.equal(rightRight, rightRightLeft.right);
+            assert.equal(rightRight.parent, rightRightLeft);
 
-            assert.equal(node6, node7.left);
-            assert.equal(node6.parent, node7);
+            assert.equal(right, rightRightLeft.left);
+            assert.equal(right.parent, rightRightLeft);
+            assert.equal(tree.root.height, 3);
         });
-
-        it("should insert node to left and node to right of empty root node if root node value between inserted node values", () => {
-
-            const tree = new Tree();
-            const root = tree.insert(2);
-
-            const node1 = tree.insert(1);
-            const node3 = tree.insert(3);
-
-            assert.equal(node1, root.left);
-            assert.equal(node1.parent, root);
-
-            assert.equal(node3, root.right);
-            assert.equal(node3.parent, root);
-        });
-
-        it("should insert multiple nodes and rebalance with single rotation if inbalanced to right of empty root node", () => {
-
-            const tree = new Tree();
-            const root = tree.insert(1);
-
-            const node2 = tree.insert(2);
-            const node3 = tree.insert(3);
-
-            assert.equal(node2, tree.root);
-            assert.equal(node2.parent, "");
-
-            assert.equal(node2.left, root);
-            assert.equal(root.parent, node2);
-
-            assert.equal(node2.right, node3);
-            assert.equal(node3.parent, node2);
-        });
-
-        it("should insert multiple nodes and rebalance with single rotation if inbalanced to left of empty root node", () => {
-
-            const tree = new Tree();
-            const root = tree.insert(3);
-
-            const node2 = tree.insert(2);
-            const node1 = tree.insert(1);
-
-            assert.equal(node2, tree.root);
-            assert.equal(node2.parent, "");
-
-            assert.equal(node2.left, node1);
-            assert.equal(node1.parent, node2);
-
-            assert.equal(node2.right, root);
-            assert.equal(root.parent, node2);
-        });
-
     });
 });
