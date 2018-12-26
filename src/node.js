@@ -45,61 +45,44 @@ export function rotateRight(node) {
 
 export function rotateLeft(node) {
 
-    const nodeParent = node.parent;
-    const nodeRight = node.right;
-    const nodeRightLeft = nodeRight ? nodeRight.left : "";
+    const { parent, right } = node;
 
-    if (nodeRightLeft) {
+    // if single rotation case
+    if (right.getBalance() > 0) {
 
-        // double rotation case
-
-        if (nodeParent) {
-            if (nodeParent.right === node) {
-                nodeParent.setRight(nodeParent, nodeRightLeft);
-            }
-            else if (nodeParent.left === node) {
-                nodeParent.setLeft(nodeRightLeft);
-            }
+        if (parent) {
+            parent.replaceChild(right, node);
+        }
+        else {
+            right.parent = "";
         }
 
-        node.setRight(nodeRightLeft.left);
-        nodeRight.setLeft(nodeRightLeft.right);
+        node.setRight(right.left);
+        right.setLeft(node);
 
-        nodeRightLeft.setLeft(node);
-        nodeRightLeft.setRight(nodeRight);
-
-        node.updateLevel();
-        nodeRight.updateLevel();
-        nodeRightLeft.updateLevel();
-
-        nodeRightLeft.parent = nodeParent;
-
-        return nodeRightLeft;
+        // return the replacement of node in the tree
+        return right;
     }
+    // otherwise this is the double rotate case
     else {
 
-        // single rotation case
+        const rightLeft = right.left;
 
-        if (nodeParent) {
-            if (nodeParent.right === node) {
-                nodeParent.setRight(nodeRight);
-            }
-            else if (nodeParent.left === node) {
-                nodeParent.setLeft(nodeRight);
-            }
+        if (parent) {
+            parent.replaceChild(rightLeft, node);
+        }
+        else {
+            rightLeft.parent = "";
         }
 
-        nodeRight.setLeft(node);
-        node.setRight(nodeRightLeft);
+        right.setLeft(rightLeft.right);
+        node.setRight(rightLeft.left);
 
-        node.updateLevel();
-        nodeRight.updateLevel();
+        rightLeft.setRight(right);
+        rightLeft.setLeft(node);
 
-        nodeRight.parent = nodeParent;
-
-        return nodeRight;
+        return rightLeft;
     }
-
 }
 
 export function rotateIfNeeded(node) {
