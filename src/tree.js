@@ -1,45 +1,5 @@
 import { Node } from "./node";
 
-const nodeUpdateLevel = (node) => {
-
-    if (!node) { return; }
-
-    node.updateLevel();
-};
-
-const nodeBalance = (node) => {
-
-    if (!node) return 0;
-
-    const nodeLeft = node.left;
-    const nodeRight = node.right;
-
-    const balance = (nodeRight ? nodeRight.height : 0) - (nodeLeft ? nodeLeft.height : 0);
-    return balance;
-};
-
-function nodeSetLeft(node, newLeft) {
-
-    if (!node) return;
-
-    if (newLeft) {
-        newLeft.parent = node;
-    }
-
-    node.left = newLeft;
-}
-
-function nodeSetRight(node, newRight) {
-
-    if (!node) return;
-
-    if (newRight) {
-        newRight.parent = node;
-    }
-
-    node.right = newRight;
-}
-
 function nodeRotateLeft(node) {
 
     const nodeParent = node.parent;
@@ -52,18 +12,18 @@ function nodeRotateLeft(node) {
 
         if (nodeParent) {
             if (nodeParent.right === node) {
-                nodeSetRight(nodeParent, nodeRightLeft);
+                nodeParent.setRight(nodeParent, nodeRightLeft);
             }
             else if (nodeParent.left === node) {
-                nodeSetLeft(nodeParent, nodeRightLeft);
+                nodeParent.setLeft(nodeRightLeft);
             }
         }
 
-        nodeSetRight(node, nodeRightLeft.left);
-        nodeSetLeft(nodeRight, nodeRightLeft.right);
+        node.setRight(nodeRightLeft.left);
+        nodeRight.setLeft(nodeRightLeft.right);
 
-        nodeSetLeft(nodeRightLeft, node);
-        nodeSetRight(nodeRightLeft, nodeRight);
+        nodeRightLeft.setLeft(node);
+        nodeRightLeft.setRight(nodeRight);
 
         node.updateLevel();
         nodeRight.updateLevel();
@@ -79,15 +39,15 @@ function nodeRotateLeft(node) {
 
         if (nodeParent) {
             if (nodeParent.right === node) {
-                nodeSetRight(nodeParent, nodeRight);
+                nodeParent.setRight(nodeRight);
             }
             else if (nodeParent.left === node) {
-                nodeSetLeft(nodeParent, nodeRight);
+                nodeParent.setLeft(nodeRight);
             }
         }
 
-        nodeSetLeft(nodeRight, node);
-        nodeSetRight(node, nodeRightLeft);
+        nodeRight.setLeft(node);
+        node.setRight(nodeRightLeft);
 
         node.updateLevel();
         nodeRight.updateLevel();
@@ -112,12 +72,12 @@ function nodeRotateRight(node) {
         // single rotate
 
         nodeReplace(node, nodeLeft);
-        nodeSetRight(nodeLeft, node);
-        nodeSetLeft(node, nodeLeftRight);
+        nodeLeft.setRight(node);
+        node.setLeft(nodeLeftRight);
 
-        nodeUpdateLevel(node);
-        nodeUpdateLevel(nodeLeft);
-        nodeUpdateLevel(nodeLeft.parent);
+        // nodeUpdateLevel(node);
+        // nodeUpdateLevel(nodeLeft);
+        // nodeUpdateLevel(nodeLeft.parent);
 
         return nodeLeft;
     }
@@ -128,15 +88,15 @@ function nodeRotateRight(node) {
         const nodeLeftRightRight = nodeLeftRight.right;
 
         nodeReplace(node, nodeLeftRight);
-        nodeSetLeft(nodeLeftRight, nodeLeft);
-        nodeSetRight(nodeLeftRight, node);
-        nodeSetLeft(nodeLeft, nodeLeftRightLeft);
-        nodeSetLeft(node, nodeLeftRightRight);
+        nodeLeftRight.setLeft(nodeLeft);
+        nodeLeftRight.setRight(node);
+        nodeLeft.setLeft(nodeLeftRightLeft);
+        node.setLeft(nodeLeftRightRight);
 
-        nodeUpdateLevel(nodeLeftRight);
-        nodeUpdateLevel(nodeLeft);
-        nodeUpdateLevel(node);
-        nodeUpdateLevel(nodeLeftRight.parent);
+        // nodeUpdateLevel(nodeLeftRight);
+        // nodeUpdateLevel(nodeLeft);
+        // nodeUpdateLevel(node);
+        // nodeUpdateLevel(nodeLeftRight.parent);
 
         return nodeLeftRight;
     }
@@ -163,7 +123,7 @@ function nodeInsert(treeNode, value) {
             node = new Node();
             node.height = 1;
             node.value = value;
-            nodeSetLeft(treeNode, node);
+            treeNode.setLeft(node);
         }
     }
     else {
@@ -175,13 +135,13 @@ function nodeInsert(treeNode, value) {
             node = new Node();
             node.height = 1;
             node.value = value;
-            nodeSetRight(treeNode, node);
+            treeNode.setRight(node);
         }
     }
 
-    nodeUpdateLevel(treeNode);
+    treeNode.updateLevel();
 
-    const balance = nodeBalance(treeNode);
+    const balance = treeNode.getBalance();
 
     if (balance < -1) {
         nodeRotateRight(treeNode);
@@ -202,10 +162,10 @@ function nodeReplace(node, replacement) {
     if (parent) {
 
         if (parent.right === node) {
-            nodeSetRight(parent, replacement);
+            parent.setRight(replacement);
         }
         else if (parent.left === node) {
-            nodeSetLeft(parent, replacement);
+            parent.setLeft(replacement);
         }
     }
 
@@ -237,8 +197,8 @@ function nodeRemove(treeNode, value) {
                 nodeReplace(treeNode, nextValueNode);
 
                 // left left/right children of replacement node to those of node being replaced
-                nodeSetLeft(nextValueNode, treeNode.left);
-                nodeSetRight(nextValueNode, treeNode.right);
+                nextValueNode.setLeft(treeNode.left);
+                nextValueNode.setLeft(treeNode.right);
 
                 treeNode = nextValueNode;
             }
@@ -260,9 +220,9 @@ function nodeRemove(treeNode, value) {
         }
     }
 
-    nodeUpdateLevel(treeNode);
+    treeNode.updateLevel();
 
-    const balance = nodeBalance(treeNode);
+    const balance = treeNode.getBalance();
 
     if (balance < -1) {
         return nodeRotateRight(treeNode);

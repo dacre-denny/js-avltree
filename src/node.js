@@ -1,11 +1,8 @@
-var id = 1;
-
 export class Node {
 
     constructor() {
 
         this.value = 0;
-        this.id = id++;
         this.left = "";
         this.right = "";
         this.height = 0;
@@ -19,5 +16,30 @@ export class Node {
         this.height = Math.max(left ? left.height : 0, right ? right.height : 0) + 1;
     }
 
-    
+    getBalance() {
+
+        const { left, right } = this;
+
+        return (right ? right.height : 0) - (left ? left.height : 0);
+    }
+
+    setLeft(node) {
+
+        if (!node) return;
+
+        node.parent = this;
+        this.left = node;
+
+        this.updateLevel();
+    }
+
+    setRight(node) {
+
+        if (!node) return;
+
+        node.parent = this;
+        this.right = node;
+
+        this.updateLevel();
+    }
 }
