@@ -1,43 +1,45 @@
 export function rotateRight(node) {
 
-    const nodeLeft = node.left;
+    const { parent, left } = node;
 
-    if (!nodeLeft) return;
+    if (!left) { return node; }
 
-    const nodeLeftRight = nodeLeft.right;
-    const nodeLeftLeft = nodeLeft.left;
+    // if single rotation case
+    if (left.getBalance() < 0) {
 
-    if (nodeLeftLeft.height >= nodeLeftRight.height) {
-        // single rotate
+        if (parent) {
+            parent.replaceChild(left, node);
+        }
+        else {
+            left.parent = "";
+        }
 
-        nodeReplace(node, nodeLeft);
-        nodeLeft.setRight(node);
-        node.setLeft(nodeLeftRight);
+        node.setLeft(left.right);
+        left.setRight(node);
 
-        // nodeUpdateLevel(node);
-        // nodeUpdateLevel(nodeLeft);
-        // nodeUpdateLevel(nodeLeft.parent);
-
-        return nodeLeft;
+        // return the replacement of node in the tree
+        return left;
     }
+    // otherwise this is the double rotate case
     else {
-        // double rotate
 
-        const nodeLeftRightLeft = nodeLeftRight.left;
-        const nodeLeftRightRight = nodeLeftRight.right;
+        const leftRight = left.right;
 
-        nodeReplace(node, nodeLeftRight);
-        nodeLeftRight.setLeft(nodeLeft);
-        nodeLeftRight.setRight(node);
-        nodeLeft.setLeft(nodeLeftRightLeft);
-        node.setLeft(nodeLeftRightRight);
+        if (parent) {
+            parent.replaceChild(leftRight, node);
+        }
+        else {
+            leftRight.parent = "";
+        }
 
-        // nodeUpdateLevel(nodeLeftRight);
-        // nodeUpdateLevel(nodeLeft);
-        // nodeUpdateLevel(node);
-        // nodeUpdateLevel(nodeLeftRight.parent);
+        left.setRight(leftRight.left);
+        node.setLeft(leftRight.right);
 
-        return nodeLeftRight;
+        leftRight.setLeft(left);
+        leftRight.setRight(node);
+
+
+        return leftRight;
     }
 }
 
@@ -196,7 +198,9 @@ export class Node {
             }
         }
 
-        rotateIfNeeded(this);
+        this.updateLevel();
+
+        return rotateIfNeeded(this);
     }
 
     removeValue(value) {

@@ -247,14 +247,14 @@ export class Tree {
 
         const { root } = this;
 
-        this.root = root ? root.insert(value) : new Node(value);
+        this.root = root ? root.insertValue(value) : new Node(value);
     }
 
     remove(value) {
 
         const { root } = this;
 
-        this.root = root ? root.remove(value) : "";
+        this.root = root ? root.removeValue(value) : "";
     }
 
     find(value) {
