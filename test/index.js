@@ -382,7 +382,13 @@ describe("Tree module", () => {
     });
 
     describe("find", () => {
-        return;
+
+        it("should return undefined if tree empty", () => {
+
+            const tree = new Tree();
+
+            assert.isUndefined(tree.find(1));
+        });
 
         it("should return undefined if no value provided", () => {
 
@@ -397,14 +403,7 @@ describe("Tree module", () => {
 
             assert.isUndefined(tree.find());
         });
-
-        it("should return undefined if tree empty", () => {
-
-            const tree = new Tree();
-
-            assert.isUndefined(tree.find(1));
-        });
-
+        
         it("should return undefined if value not present", () => {
 
             const tree = new Tree();

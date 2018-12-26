@@ -8,7 +8,7 @@ export function rotateRight(node) {
     if (left.getBalance() < 0) {
 
         if (parent) {
-            parent.replaceChild(left, node);
+            parent.replaceChild(node, left);
         }
         else {
             left.parent = "";
@@ -26,7 +26,7 @@ export function rotateRight(node) {
         const leftRight = left.right;
 
         if (parent) {
-            parent.replaceChild(leftRight, node);
+            parent.replaceChild(node, leftRight);
         }
         else {
             leftRight.parent = "";
@@ -51,7 +51,7 @@ export function rotateLeft(node) {
     if (right.getBalance() > 0) {
 
         if (parent) {
-            parent.replaceChild(right, node);
+            parent.replaceChild(node, right);
         }
         else {
             right.parent = "";
@@ -69,7 +69,7 @@ export function rotateLeft(node) {
         const rightLeft = right.left;
 
         if (parent) {
-            parent.replaceChild(rightLeft, node);
+            parent.replaceChild(node, rightLeft);
         }
         else {
             rightLeft.parent = "";
@@ -203,7 +203,7 @@ export class Node {
                 }
 
                 if (this.parent) {
-                    this.parent.replaceChild(nextNode, this);
+                    this.parent.replaceChild(this, nextNode);
                 }
 
                 nextNode.setLeft(this.left);
@@ -212,13 +212,13 @@ export class Node {
             else if (this.left) {
 
                 if (this.parent) {
-                    this.parent.replaceChild(this.left, this);
+                    this.parent.replaceChild(this, this.left);
                 }
             }
             else {
 
                 if (this.parent) {
-                    this.parent.replaceChild("", this);
+                    this.parent.replaceChild(this, "");
                 }
             }
         }
@@ -244,10 +244,10 @@ export class Node {
             return this;
         }
         else if (value < this.value) {
-            return this.left.findValue(value);
+            return this.left ? this.left.findValue(value) : undefined;
         }
         else {
-            return this.right.findValue(value);
+            return this.right ? this.right.findValue(value) : undefined;
         }
     }
 }
