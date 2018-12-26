@@ -243,6 +243,8 @@ export class Tree {
 
     insert(value) {
 
+        if (value === undefined) return;
+
         const { root } = this;
 
         this.root = root ? root.insert(value) : new Node(value);

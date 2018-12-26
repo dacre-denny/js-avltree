@@ -100,6 +100,21 @@ export function rotateLeft(node) {
 
 }
 
+export function rotateIfNeeded(node) {
+
+    const balance = node.getBalance();
+
+    if (balance < -1) {
+        return rotateRight(node);
+    }
+    else if (balance > 1) {
+        return rotateLeft(node);
+    }
+    else {
+        return node;
+    }
+}
+
 export class Node {
 
     constructor(value) {
@@ -127,9 +142,10 @@ export class Node {
 
     setLeft(node) {
 
-        if (!node) return;
+        if (node) {
+            node.parent = this;
+        }
 
-        node.parent = this;
         this.left = node;
 
         this.updateLevel();
@@ -137,12 +153,26 @@ export class Node {
 
     setRight(node) {
 
-        if (!node) return;
+        if (node) {
+            node.parent = this;
+        }
 
-        node.parent = this;
         this.right = node;
 
         this.updateLevel();
+    }
+
+    replaceChild(currentChild, newChild) {
+
+        if (currentChild === undefined) { return; }
+
+        if (this.left === currentChild) {
+            this.setLeft(newChild);
+        }
+
+        if (this.right === currentChild) {
+            this.setRight(newChild);
+        }
     }
 
     insertValue(value) {
@@ -166,21 +196,59 @@ export class Node {
             }
         }
 
-        const balance = this.getBalance();
-
-        if (balance < -1) {
-            return rotateRight(this);
-        }
-        else if (balance > 1) {
-            return rotateLeft(this);
-        }
-        else {
-            return this;
-        }
+        rotateIfNeeded(this);
     }
 
     removeValue(value) {
 
+        if (value === this.value) {
+
+            if (this.right) {
+
+                let nextNode = this.right;
+                // find node of next value that will replace this node
+                while (nextNode.left) { nextNode = nextNode.left; }
+
+                // This nextNode has not left child. If nextNode has defined  xxxxxx
+                // or undefined right, set it as left of nextNode parent 
+                if (nextNode !== this.right) {
+                    nextNode.parent.setLeft(nextNode.right);
+                }
+
+                if (this.parent) {
+                    this.parent.replaceChild(nextNode, this);
+                }
+
+                nextNode.setLeft(this.left);
+                nextNode.setRight(this.right);
+            }
+            else if (this.left) {
+
+                if (this.parent) {
+                    this.parent.replaceChild(this.left, this);
+                }
+            }
+            else {
+
+                if (this.parent) {
+                    this.parent.replaceChild("", this);
+                }
+            }
+        }
+        else if (value <= this.value) {
+
+            if (this.left) {
+                this.left.removeValue(value);
+            }
+        }
+        else {
+
+            if (this.right) {
+                this.right.removeValue(value);
+            }
+        }
+
+        return rotateIfNeeded(this);
     }
 
     findValue(value) {
