@@ -1,22 +1,15 @@
 import { Node } from "./node";
 
-const nodeLevel = (node) => {
-
-    const heightLeft = node.left ? node.left.height : 0;
-    const heightRight = node.right ? node.right.height : 0;
-    const height = Math.max(heightLeft, heightRight) + 1;
-
-    return height;
-};
-
 const nodeUpdateLevel = (node) => {
 
     if (!node) { return; }
 
-    node.height = nodeLevel(node);
+    node.updateLevel();
 };
 
 const nodeBalance = (node) => {
+
+    if (!node) return 0;
 
     const nodeLeft = node.left;
     const nodeRight = node.right;
@@ -72,11 +65,13 @@ function nodeRotateLeft(node) {
         nodeSetLeft(nodeRightLeft, node);
         nodeSetRight(nodeRightLeft, nodeRight);
 
-        node.height = nodeLevel(node);
-        nodeRight.height = nodeLevel(nodeRight);
-        nodeRightLeft.height = nodeLevel(nodeRightLeft);
+        node.updateLevel();
+        nodeRight.updateLevel();
+        nodeRightLeft.updateLevel();
 
         nodeRightLeft.parent = nodeParent;
+
+        return nodeRightLeft;
     }
     else {
 
@@ -94,70 +89,68 @@ function nodeRotateLeft(node) {
         nodeSetLeft(nodeRight, node);
         nodeSetRight(node, nodeRightLeft);
 
-        node.height = nodeLevel(node);
-        nodeRight.height = nodeLevel(nodeRight);
+        node.updateLevel();
+        nodeRight.updateLevel();
 
         nodeRight.parent = nodeParent;
+
+        return nodeRight;
     }
 
 }
 
 function nodeRotateRight(node) {
 
-    const nodeParent = node.parent;
     const nodeLeft = node.left;
-    const nodeLeftRight = nodeLeft ? nodeLeft.right : "";
 
-    if (nodeLeftRight) {
+    if (!nodeLeft) return;
 
-        // double rotation case
+    const nodeLeftRight = nodeLeft.right;
+    const nodeLeftLeft = nodeLeft.left;
 
-        if (nodeParent) {
-            if (nodeParent.right === node) {
-                nodeSetRight(nodeParent, nodeLeftRight);
-            }
-            else if (nodeParent.left === node) {
-                nodeSetLeft(nodeParent, nodeLeftRight);
-            }
-        }
+    if (nodeLeftLeft.height >= nodeLeftRight.height) {
+        // single rotate
 
-        nodeSetRight(nodeLeft, nodeLeftRight.left);
-        nodeSetLeft(node, nodeLeftRight.right);
-
-        nodeSetRight(nodeLeftRight, node);
-        nodeSetLeft(nodeLeftRight, nodeLeft);
-
-        nodeLeft.height = nodeLevel(nodeLeft);
-        node.height = nodeLevel(node);
-        nodeLeftRight.height = nodeLevel(nodeLeftRight);
-
-        nodeLeftRight.parent = nodeParent;
-    }
-    else {
-
-        // single rotation case
-
-        if (nodeParent) {
-            if (nodeParent.right === node) {
-                nodeSetRight(nodeParent, nodeLeft);
-            }
-            else if (nodeParent.left === node) {
-                nodeSetLeft(nodeParent, nodeLeft);
-            }
-        }
-
+        nodeReplace(node, nodeLeft);
         nodeSetRight(nodeLeft, node);
         nodeSetLeft(node, nodeLeftRight);
 
-        node.height = nodeLevel(node);
-        nodeLeft.height = nodeLevel(nodeLeft);
+        nodeUpdateLevel(node);
+        nodeUpdateLevel(nodeLeft);
+        nodeUpdateLevel(nodeLeft.parent);
 
-        nodeLeft.parent = nodeParent;
+        return nodeLeft;
     }
+    else {
+        // double rotate
 
+        const nodeLeftRightLeft = nodeLeftRight.left;
+        const nodeLeftRightRight = nodeLeftRight.right;
+
+        nodeReplace(node, nodeLeftRight);
+        nodeSetLeft(nodeLeftRight, nodeLeft);
+        nodeSetRight(nodeLeftRight, node);
+        nodeSetLeft(nodeLeft, nodeLeftRightLeft);
+        nodeSetLeft(node, nodeLeftRightRight);
+
+        nodeUpdateLevel(nodeLeftRight);
+        nodeUpdateLevel(nodeLeft);
+        nodeUpdateLevel(node);
+        nodeUpdateLevel(nodeLeftRight.parent);
+
+        return nodeLeftRight;
+    }
 }
 
 function nodeInsert(treeNode, value) {
+
+    if (!treeNode) {
+
+        const node = new Node();
+        node.height = 1;
+        node.value = value;
+        return node;
+    }
 
     let node;
 
@@ -214,52 +207,57 @@ function nodeReplace(node, replacement) {
         else if (parent.left === node) {
             nodeSetLeft(parent, replacement);
         }
+    }
 
-        if (replacement) {
-            replacement.parent = parent;
-        }
+    if (replacement) {
+        replacement.parent = parent;
     }
 }
 
 function nodeRemove(treeNode, value) {
 
-    if (!treeNode) {
-        return;
-    }
+    if (treeNode) {
 
-    if (treeNode.value === value) {
+        if (treeNode.value === value) {
 
-        if (treeNode.right) {
+            if (treeNode.right) {
 
-            // find next value node which will replace this, search till last left most child
-            // from node right
-            let nextValueNode = treeNode.right;
-            for (; nextValueNode !== ""; nextValueNode = nextValueNode.left) { continue; }
+                // find next value node which will replace this, search till last left most child
+                // from node right
+                let nextValueNode = treeNode.right;
 
-            // set right node of nextValueNode if it exists as left child of nvn parent
-            nodeReplace(nextValueNode, nextValueNode.right);
+                for (; nextValueNode.left; nextValueNode = nextValueNode.left) { continue; }
 
-            // repace node being removed with next value node
-            nodeReplace(treeNode, nextValueNode);
+                // set right node of nextValueNode if it exists as left child of nvn parent
+                if (nextValueNode) {
+                    nodeReplace(nextValueNode, nextValueNode.right);
+                }
 
-            // left left/right children of replacement node to those of node being replaced
-            nodeSetLeft(nextValueNode, treeNode.left);
-            nodeSetRight(nextValueNode, treeNode.right);
+                // repace node being removed with next value node
+                nodeReplace(treeNode, nextValueNode);
+
+                // left left/right children of replacement node to those of node being replaced
+                nodeSetLeft(nextValueNode, treeNode.left);
+                nodeSetRight(nextValueNode, treeNode.right);
+
+                treeNode = nextValueNode;
+            }
+            else if (treeNode.left) {
+
+                nodeReplace(treeNode, treeNode.left);
+            }
+            else {
+
+                nodeReplace(treeNode, "");
+                treeNode = "";
+            }
         }
-        else if (treeNode.left) {
-
-            nodeReplace(treeNode, treeNode.left);
+        else if (value <= treeNode.value) {
+            nodeRemove(treeNode.left, value);
         }
         else {
-
-            nodeReplace(treeNode, "");
+            nodeRemove(treeNode.right, value);
         }
-    }
-    else if (value <= treeNode.value) {
-        nodeRemove(treeNode.left, value);
-    }
-    else {
-        nodeRemove(treeNode.right, value);
     }
 
     nodeUpdateLevel(treeNode);
@@ -267,10 +265,13 @@ function nodeRemove(treeNode, value) {
     const balance = nodeBalance(treeNode);
 
     if (balance < -1) {
-        nodeRotateRight(treeNode);
+        return nodeRotateRight(treeNode);
     }
     else if (balance > 1) {
-        nodeRotateLeft(treeNode);
+        return nodeRotateLeft(treeNode);
+    }
+    else {
+        return treeNode;
     }
 }
 
@@ -282,55 +283,38 @@ export class Tree {
 
     insert(value) {
 
-        if (this.root) {
-            const node = nodeInsert(this.root, value);
+        const node = nodeInsert(this.root, value);
 
-            for (; this.root.parent; this.root = this.root.parent) {
-                continue;
-            }
+        if (!this.root) {
+            this.root = node;
+        }
 
-            return node;
-        }
-        else {
-            this.root = new Node();
-            this.root.height = 1;
-            this.root.value = value;
-            return this.root;
-        }
+        return node;
     }
 
     remove(value) {
 
         if (this.root) {
 
-            if (this.root.value === value) {
-
-                if (!this.root.left && !this.root.right) {
-                    this.root = "";
-                    return;
-                }
-            }
-
-            nodeRemove(this.root, value);
+            this.root = nodeRemove(this.root, value);
         }
     }
 
     find(value) {
 
-        if (value === undefined) {
-            return;
-        }
+        if (value !== undefined) {
 
-        for (let node = this.root; node !== "";) {
+            for (let node = this.root; node !== "";) {
 
-            if (node.value === value) {
-                return node;
-            }
-            else if (value < node.value) {
-                node = node.left;
-            }
-            else {
-                node = node.right;
+                if (node.value === value) {
+                    return node;
+                }
+                else if (value < node.value) {
+                    node = node.left;
+                }
+                else {
+                    node = node.right;
+                }
             }
         }
     }
