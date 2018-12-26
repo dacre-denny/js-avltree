@@ -243,39 +243,22 @@ export class Tree {
 
     insert(value) {
 
-        const node = nodeInsert(this.root, value);
+        const { root } = this;
 
-        if (!this.root) {
-            this.root = node;
-        }
-
-        return node;
+        this.root = root ? root.insert(value) : new Node(value);
     }
 
     remove(value) {
 
-        if (this.root) {
+        const { root } = this;
 
-            this.root = nodeRemove(this.root, value);
-        }
+        this.root = root ? root.remove(value) : "";
     }
 
     find(value) {
 
-        if (value !== undefined) {
+        const { root } = this;
 
-            for (let node = this.root; node !== "";) {
-
-                if (node.value === value) {
-                    return node;
-                }
-                else if (value < node.value) {
-                    node = node.left;
-                }
-                else {
-                    node = node.right;
-                }
-            }
-        }
+        return value !== undefined && root ? root.findValue(value) : "";
     }
 }
