@@ -220,6 +220,8 @@ export class Node {
                 if (this.parent) {
                     this.parent.replaceChild(this, "");
                 }
+
+                return this.parent;
             }
         }
         else if (value <= this.value) {

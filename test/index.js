@@ -403,7 +403,7 @@ describe("Tree module", () => {
 
             assert.isUndefined(tree.find());
         });
-        
+
         it("should return undefined if value not present", () => {
 
             const tree = new Tree();
@@ -439,7 +439,6 @@ describe("Tree module", () => {
     });
 
     describe("remove", () => {
-        return;
 
         it("should do nothing when tree empty", () => {
 
@@ -453,27 +452,30 @@ describe("Tree module", () => {
         it("should do nothing when value not present", () => {
 
             const tree = new Tree();
-            const root = tree.insert(2);
-            const left = tree.insert(1);
-            const right = tree.insert(3);
+
+            tree.insert(2);
+            tree.insert(1);
+            tree.insert(3);
 
             tree.remove(4);
 
             assert.equal(tree.root.parent, "");
-            assert.equal(tree.root, root);
-
-            assert.equal(tree.root.left, left);
-            assert.equal(tree.root, left.parent);
-
-            assert.equal(tree.root.right, right);
-            assert.equal(tree.root, right.parent);
-
+            assert.equal(tree.root.value, 2);
             assert.equal(tree.root.height, 2);
+
+            assert.equal(tree.root.left.parent, tree.root);
+            assert.equal(tree.root.left.value, 1);
+            assert.equal(tree.root.left.height, 1);
+
+            assert.equal(tree.root.right.parent, tree.root);
+            assert.equal(tree.root.right.value, 3);
+            assert.equal(tree.root.right.height, 1);
         });
 
         it("should remove from root and produce empty tree when only value present", () => {
 
             const tree = new Tree();
+
             tree.insert(1);
 
             tree.remove(1);
@@ -481,24 +483,27 @@ describe("Tree module", () => {
             assert.equal(tree.root, "");
         });
 
+        return;
+
         it("should remove from root when value present", () => {
 
             const tree = new Tree();
+
             tree.insert(1);
-            const left = tree.insert(0);
-            const right = tree.insert(2);
+            tree.insert(0);
+            tree.insert(2);
 
             tree.remove(1);
 
-            assert.equal(tree.root, right);
+            assert.equal(tree.root.value, 0);
             assert.equal(tree.root.parent, "");
-
-            assert.equal(tree.root.right, "");
-
-            assert.equal(tree.root.left, left);
-            assert.equal(tree.root.left.parent, right);
-
             assert.equal(tree.root.height, 2);
+
+            assert.equal(tree.root.left, "");
+
+            assert.equal(tree.root.right.value, 2);
+            assert.equal(tree.root.right.parent, "");
+            assert.equal(tree.root.right.height, 1);
         });
 
         it("should remove from left subtree when value present", () => {
