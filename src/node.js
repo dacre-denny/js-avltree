@@ -188,6 +188,8 @@ export class Node {
 
     removeValue(value) {
 
+        let result = undefined;
+
         if (value === this.value) {
 
             if (this.right) {
@@ -217,12 +219,14 @@ export class Node {
                     nextNode.parent = "";
                 }
 
-                return rotateIfNeeded(nextNode);
+                result = rotateIfNeeded(nextNode);
             }
             else if (this.left) {
 
                 if (this.parent) {
                     this.parent.replaceChild(this, this.left);
+
+                    result = rotateIfNeeded(this.parent);
                 }
             }
             else {
@@ -230,28 +234,28 @@ export class Node {
                 if (this.parent) {
                     this.parent.replaceChild(this, "");
 
-                    return rotateIfNeeded(this.parent);
+                    result = rotateIfNeeded(this.parent);
                 }
                 else {
 
-                    return "";
+                    result = "";
                 }
             }
         }
         else if (value <= this.value) {
 
             if (this.left) {
-                this.left.removeValue(value);
+                return this.left.removeValue(value);
             }
         }
         else {
 
             if (this.right) {
-                this.right.removeValue(value);
+                return this.right.removeValue(value);
             }
         }
 
-        return rotateIfNeeded(this);
+        return result;
     }
 
     findValue(value) {
