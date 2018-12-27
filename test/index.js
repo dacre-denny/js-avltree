@@ -483,8 +483,6 @@ describe("Tree module", () => {
             assert.equal(tree.root, "");
         });
 
-        return;
-
         it("should remove from root when value present", () => {
 
             const tree = new Tree();
@@ -495,16 +493,60 @@ describe("Tree module", () => {
 
             tree.remove(1);
 
-            assert.equal(tree.root.value, 0);
+            assert.equal(tree.root.value, 2);
+            assert.equal(tree.root.parent, "");
+            assert.equal(tree.root.height, 2);
+
+            assert.equal(tree.root.left.value, 0);
+            assert.equal(tree.root.left.parent, tree.root);
+            assert.equal(tree.root.left.height, 1);
+
+            assert.equal(tree.root.right, "");
+        });
+
+        it("should remove left leaf node when value present", () => {
+
+            const tree = new Tree();
+
+            tree.insert(1);
+            tree.insert(0);
+            tree.insert(2);
+
+            tree.remove(0);
+
+            assert.equal(tree.root.value, 1);
             assert.equal(tree.root.parent, "");
             assert.equal(tree.root.height, 2);
 
             assert.equal(tree.root.left, "");
 
             assert.equal(tree.root.right.value, 2);
-            assert.equal(tree.root.right.parent, "");
+            assert.equal(tree.root.right.parent, tree.root);
             assert.equal(tree.root.right.height, 1);
         });
+
+        it("should remove right leaf node when value present", () => {
+
+            const tree = new Tree();
+
+            tree.insert(1);
+            tree.insert(0);
+            tree.insert(2);
+
+            tree.remove(2);
+
+            assert.equal(tree.root.value, 1);
+            assert.equal(tree.root.parent, "");
+            assert.equal(tree.root.height, 2);
+
+            assert.equal(tree.root.left.value, 0);
+            assert.equal(tree.root.left.parent, tree.root);
+            assert.equal(tree.root.left.height, 1);
+
+            assert.equal(tree.root.right, "");
+        });
+
+        return;
 
         it("should remove from left subtree when value present", () => {
 

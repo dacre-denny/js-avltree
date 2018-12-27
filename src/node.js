@@ -193,21 +193,31 @@ export class Node {
             if (this.right) {
 
                 let nextNode = this.right;
+
                 // find node of next value that will replace this node
                 while (nextNode.left) { nextNode = nextNode.left; }
 
-                // This nextNode has not left child. If nextNode has defined  xxxxxx
-                // or undefined right, set it as left of nextNode parent 
                 if (nextNode !== this.right) {
-                    nextNode.parent.setLeft(nextNode.right);
+
+                    // Remove nextNode from it's subtree
+                    nextNode.parent.replaceChild(nextNode.right, nextNode);
+
+                    nextNode.setRight(this.right);
                 }
+                else {
+                    nextNode.setRight(this.right.right);
+                }
+
+                nextNode.setLeft(this.left);
 
                 if (this.parent) {
                     this.parent.replaceChild(this, nextNode);
                 }
+                else {
+                    nextNode.parent = "";
+                }
 
-                nextNode.setLeft(this.left);
-                nextNode.setRight(this.right);
+                return rotateIfNeeded(nextNode);
             }
             else if (this.left) {
 
@@ -219,9 +229,13 @@ export class Node {
 
                 if (this.parent) {
                     this.parent.replaceChild(this, "");
-                }
 
-                return this.parent;
+                    return rotateIfNeeded(this.parent);
+                }
+                else {
+
+                    return "";
+                }
             }
         }
         else if (value <= this.value) {
