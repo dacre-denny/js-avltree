@@ -160,30 +160,46 @@ export class Node {
         }
     }
 
+    /**
+     * Inserts the specified value into the tree
+     * 
+     * @param {any} value to be inserted
+     * @returns {Node} node for the inserted value
+     */
     insertValue(value) {
 
-        if (value <= this.value) {
+        var newNode = new Node(value);
+        var node = this;
+        for (; ;) {
 
-            if (this.left) {
-                this.left.insertValue(value);
+            if (value <= node.value) {
+                if (node.left) {
+                    node = node.left;
+                }
+                else {
+                    node.setLeft(newNode);
+                    break;
+                }
             }
             else {
-                this.setLeft(new Node(value));
+
+                if (node.right) {
+                    node = node.right;
+                }
+                else {
+                    node.setRight(newNode);
+                    break;
+                }
             }
         }
-        else {
 
-            if (this.right) {
-                this.right.insertValue(value);
-            }
-            else {
-                this.setRight(new Node(value));
-            }
+        // Traverse up the tree to root, applying rotations as needed
+        for (; node;) {
+            node = rotateIfNeeded(node);
+            node = node.parent;
         }
 
-        this.updateLevel();
-
-        return rotateIfNeeded(this);
+        return newNode;
     }
 
     /**
@@ -246,8 +262,8 @@ export class Node {
                     node = node.parent;
                 }
 
+                // Return root, current or replaced
                 return node;
-
             }
             else if (value < node.value) {
                 node = node.left;
