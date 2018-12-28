@@ -19,13 +19,7 @@ export class Tree {
 
         const { root } = this;
 
-        if (root) {
-
-            const removeResult = root.removeValue(value);
-            if (removeResult !== undefined) {
-                this.root = removeResult;
-            }
-        }
+        this.root = root ? root.removeValue(value) : "";
     }
 
     find(value) {

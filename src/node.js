@@ -186,6 +186,12 @@ export class Node {
         return rotateIfNeeded(this);
     }
 
+    /**
+     * Removes the value from the tree if it exists
+     * 
+     * @param {any} value value to be removed
+     * @returns {Node|""} this node instance, or the instance that replaces it as a result of the remove operation
+     */
     removeValue(value) {
 
         let result = undefined;
@@ -245,17 +251,22 @@ export class Node {
         else if (value <= this.value) {
 
             if (this.left) {
-                return this.left.removeValue(value);
+                result = this.left.removeValue(value);
             }
         }
         else {
 
             if (this.right) {
-                return this.right.removeValue(value);
+                result = this.right.removeValue(value);
             }
         }
 
-        return result;
+        if (result) {
+            return rotateIfNeeded(this);
+        }
+        else {
+            return result;
+        }
     }
 
     findValue(value) {
