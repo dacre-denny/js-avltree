@@ -194,91 +194,88 @@ export class Node {
      */
     removeValue(value) {
 
-        let result = undefined;
+        for (var node = this; ;) {
 
-        if (value === this.value) {
+            if (value === node.value) {
 
-            if (this.right) {
+                const { right, left, parent } = node;
 
-                let nextNode = this.right;
+                if (right) {
 
-                // find node of next value that will replace this node
-                while (nextNode.left) { nextNode = nextNode.left; }
+                    let nextNode = right;
 
-                if (nextNode !== this.right) {
+                    // find node of next value that will replace this node
+                    while (nextNode.left) { nextNode = nextNode.left; }
 
-                    // Remove nextNode from it's subtree
-                    nextNode.parent.replaceChild(nextNode.right, nextNode);
+                    if (nextNode !== right) {
 
-                    nextNode.setRight(this.right);
+                        // Remove nextNode from it's subtree
+                        nextNode.parent.replaceChild(nextNode.right, nextNode);
+
+                        nextNode.setRight(right);
+                    }
+                    else {
+                        nextNode.setRight(right.right);
+                    }
+
+                    nextNode.setLeft(left);
+
+                    if (parent) {
+                        parent.replaceChild(this, nextNode);
+                    }
+                    else {
+                        nextNode.parent = "";
+                    }
+                }
+                else if (left) {
+
+                    if (parent) {
+                        parent.replaceChild(this, left);
+                    }
                 }
                 else {
-                    nextNode.setRight(this.right.right);
+
+                    if (parent) {
+                        parent.replaceChild(node, "");
+                    }
                 }
 
-                nextNode.setLeft(this.left);
-
-                if (this.parent) {
-                    this.parent.replaceChild(this, nextNode);
-                }
-                else {
-                    nextNode.parent = "";
+                // Traverse up the tree to root, applying rotations as needed
+                for (; node;) {
+                    node = rotateIfNeeded(node);
+                    node = node.parent;
                 }
 
-                result = rotateIfNeeded(nextNode);
+                return node;
+
             }
-            else if (this.left) {
-
-                if (this.parent) {
-                    this.parent.replaceChild(this, this.left);
-
-                    result = rotateIfNeeded(this.parent);
-                }
+            else if (value < node.value) {
+                node = node.left;
             }
             else {
-
-                if (this.parent) {
-                    this.parent.replaceChild(this, "");
-
-                    result = rotateIfNeeded(this.parent);
-                }
-                else {
-
-                    result = "";
-                }
+                node = node.right;
             }
-        }
-        else if (value <= this.value) {
-
-            if (this.left) {
-                result = this.left.removeValue(value);
-            }
-        }
-        else {
-
-            if (this.right) {
-                result = this.right.removeValue(value);
-            }
-        }
-
-        if (result) {
-            return rotateIfNeeded(this);
-        }
-        else {
-            return result;
         }
     }
 
+    /**
+     * Searchs tree for node with matching value
+     * @param {any} value value to match node on
+     * @returns {Node|undefined} the node instance with matching value or undefined if no match found
+     */
     findValue(value) {
 
-        if (value === this.value) {
-            return this;
-        }
-        else if (value < this.value) {
-            return this.left ? this.left.findValue(value) : undefined;
-        }
-        else {
-            return this.right ? this.right.findValue(value) : undefined;
+        for (var node = this; node;) {
+
+            if (node.value === this.value) {
+                return node;
+            }
+            else if (value < this.value) {
+                node = node.left;
+            }
+            else {
+                node = node.right;
+            }
         }
     }
 }
