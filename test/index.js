@@ -770,4 +770,42 @@ describe("Tree module", () => {
             assert.equal(tree.root.right.right.height, 1);
         });
     });
+
+    describe("tests", () => {
+
+        const tree = new Tree();
+
+        function checkIntegrity(node) {
+
+            const lVal = node.left ? node.left.value : undefined;
+            const rVal = node.right ? node.right.value : undefined;
+            const ok = (lVal === undefined ? true : lVal < node.value) && (rVal === undefined ? true : node.value < rVal);
+
+            console.log(`${ok ? "OK" : "FAIL"} : ${lVal === undefined ? "" : lVal + " < "}${node.value}${rVal === undefined ? "" : "< " + rVal}`);
+
+            if (node.left) checkIntegrity(node.left);
+            if (node.right) checkIntegrity(node.right);
+        }
+
+        for (var i = 0; i < 10; i++) {
+
+            tree.insert(i);
+
+            checkIntegrity(tree.root);
+            console.log("--------------");
+
+            //console.log("added node:", i, "tree height:", tree.root.height);
+        }
+
+        for (var j = 0; j < 10; j++) {
+
+            tree.remove(j);
+
+            checkIntegrity(tree.root);
+            console.log("--------------");
+
+            console.log("removed node:", j, "tree height:", tree.root.height);
+        }
+
+    });
 });

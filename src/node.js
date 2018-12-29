@@ -245,7 +245,7 @@ export class Node {
                     nextNode.setLeft(left);
 
                     if (parent) {
-                        parent.replaceChild(this, nextNode);
+                        parent.replaceChild(node, nextNode);
                     }
                     else {
                         nextNode.parent = "";
@@ -257,7 +257,7 @@ export class Node {
                 else if (left) {
 
                     if (parent) {
-                        parent.replaceChild(this, left);
+                        parent.replaceChild(node, left);
                         node = parent;
                     }
                 }

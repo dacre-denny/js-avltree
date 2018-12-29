@@ -3,9 +3,17 @@ import { Tree } from "./tree";
 
 const tree = new Tree();
 
-for (var i = 0; i < 10000; i++) {
+for (var i = 0; i < 100; i++) {
 
-    const node = tree.insert(i);
+    tree.insert(i);
 
-    console.log("added node:", node.id, "tree height:", tree.root.height);
+    console.log("added node:", i, "tree height:", tree.root.height);
 }
+
+for (var j = 0; j < 100; j++) {
+
+    tree.remove(j);
+
+    console.log("removed node:", j, "tree height:", tree.root.height);
+}
+
