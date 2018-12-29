@@ -194,12 +194,20 @@ export class Node {
         }
 
         // Traverse up the tree to root, applying rotations as needed
-        for (; node;) {
+        for (node = newNode; node;) {
+
+            node.updateLevel();
             node = rotateIfNeeded(node);
-            node = node.parent;
+
+            if (node.parent) {
+                node = node.parent;
+            }
+            else {
+                break;
+            }
         }
 
-        return newNode;
+        return node;
     }
 
     /**
@@ -210,7 +218,7 @@ export class Node {
      */
     removeValue(value) {
 
-        for (var node = this; ;) {
+        for (var node = this; node;) {
 
             if (value === node.value) {
 
@@ -242,6 +250,9 @@ export class Node {
                     else {
                         nextNode.parent = "";
                     }
+
+                    // Walk back up tree on replacement node (nextNode)
+                    node = nextNode;
                 }
                 else if (left) {
 
@@ -258,6 +269,7 @@ export class Node {
 
                 // Traverse up the tree to root, applying rotations as needed
                 for (; node;) {
+                    node.updateLevel();
                     node = rotateIfNeeded(node);
                     node = node.parent;
                 }
@@ -272,6 +284,9 @@ export class Node {
                 node = node.right;
             }
         }
+
+        //return root node
+        return this;
     }
 
     /**
@@ -283,10 +298,10 @@ export class Node {
 
         for (var node = this; node;) {
 
-            if (node.value === this.value) {
+            if (value === node.value) {
                 return node;
             }
-            else if (value < this.value) {
+            else if (value < node.value) {
                 node = node.left;
             }
             else {
