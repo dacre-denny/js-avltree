@@ -258,12 +258,17 @@ export class Node {
 
                     if (parent) {
                         parent.replaceChild(this, left);
+                        node = parent;
                     }
                 }
                 else {
 
                     if (parent) {
                         parent.replaceChild(node, "");
+                        node = parent;
+                    }
+                    else {
+                        node = ""; // node is the root existing on it's own so clear it
                     }
                 }
 
@@ -271,7 +276,13 @@ export class Node {
                 for (; node;) {
                     node.updateLevel();
                     node = rotateIfNeeded(node);
-                    node = node.parent;
+
+                    if (node.parent) {
+                        node = node.parent;
+                    }
+                    else {
+                        break;
+                    }
                 }
 
                 // Return root, current or replaced
