@@ -10,22 +10,16 @@ export class Tree {
 
         if (value === undefined) return;
 
-        const { root } = this;
-
-        this.root = insertValue(root, value);
+        this.root = insertValue(this.root, value);
     }
 
     remove(value) {
 
-        const { root } = this;
-
-        this.root = removeValue(root, value);
+        this.root = removeValue(this.root, value);
     }
 
     find(value) {
 
-        const { root } = this;
-
-        return findValue(root, value);
+        return findValue(this.root, value);
     }
 }

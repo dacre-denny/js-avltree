@@ -4,7 +4,8 @@
   "description": "implementation of avl tree in javascript",
   "main": "index.js",
   "scripts": {
-    "demo": "node ./dist/bundle.js",
+    "demo": "npm install && npm run build && node ./dist/demo.js",
+    "build": "webpack",
     "watch": "webpack --watch",
     "test": "mocha --require @babel/register",
     "cover": "istanbul cover _mocha",
@@ -12,6 +13,14 @@
   },
   "author": "Dacre Denny",
   "license": "MIT",
+  "keywords": [
+    "data structure",
+    "tree",
+    "binary tree",
+    "self-balancing",
+    "sorting",
+    "AVL tree"
+  ],
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.3",

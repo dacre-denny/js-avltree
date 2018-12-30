@@ -1,3 +1,84 @@
+/**
+ * Returns the balance metric of the subtree at the specified node
+ * 
+ * @param {Node} node the node to calculate balance of
+ * @return {number} balance of the supplied node
+ */
+export function getBalance(node) {
+
+    if (!node) return undefined;
+
+    const { left, right } = node;
+
+    return (right ? right.height : 0) - (left ? left.height : 0);
+}
+
+/**
+ * Recalculates and updates the height of the specified node based on left and right child heights
+ * 
+ * @param {Node} node the node to update the height of
+ */
+export function updateHeight(node) {
+
+    if (!node) return;
+
+    const { left, right } = node;
+
+    node.height = Math.max(left ? left.height : 0, right ? right.height : 0) + 1;
+}
+
+/**
+ * Sets the left child of node to the node supplied.
+ * 
+ * @param {Node} node the target node to have left child assigned
+ * @param {Node|''} leftChild the node to become the left child or empty value to clear
+ */
+export function setLeftChild(node, leftChild) {
+
+    if (!node) return;
+
+    if (leftChild) {
+        leftChild.parent = node;
+    }
+
+    node.left = leftChild;
+
+    updateHeight(node);
+}
+
+/**
+ * Sets the right child of node to the node supplied.
+ * 
+ * @param {Node} node the target node to have right child assigned
+ * @param {Node|''} rightChild the node to become the right child or empty value to clear
+ */
+export function setRightChild(node, rightChild) {
+
+    if (!node) return;
+
+    if (rightChild) {
+        rightChild.parent = node;
+    }
+
+    node.right = rightChild;
+
+    updateHeight(node);
+}
+
+export function replaceChild(node, currentChild, newChild) {
+
+    // An ambiguous case that cannot be resolved
+    if (!currentChild) return;
+
+    if (node.left === currentChild) {
+        setLeftChild(node, newChild);
+    }
+
+    if (node.right === currentChild) {
+        setRightChild(node, newChild);
+    }
+}
+
 export function rotateRight(node) {
 
     const { parent, left } = node;
@@ -37,7 +118,6 @@ export function rotateRight(node) {
 
         setLeftChild(leftRight, left);
         setRightChild(leftRight, node);
-
 
         return leftRight;
     }
@@ -231,7 +311,8 @@ export function removeValue(root, value) {
                     node = parent;
                 }
                 else {
-                    node = ""; // node is the root existing on it's own so clear it
+                    // node is the root existing on it's own so clear it
+                    node = "";
                 }
             }
 
@@ -287,85 +368,5 @@ export function findValue(root, value) {
         else {
             node = node.right;
         }
-    }
-}
-
-/**
- * Recalculates and updates the height of the specified node based on left and right child heights
- * 
- * @param {Node} node the node to update the height of
- */
-export function updateHeight(node) {
-
-    if (!node) return;
-
-    const { left, right } = node;
-
-    node.height = Math.max(left ? left.height : 0, right ? right.height : 0) + 1;
-}
-
-/**
- * Returns the balance metric of the subtree at the specified node
- * 
- * @param {Node} node the node to calculate balance of
- * @return {number} balance of the supplied node
- */
-export function getBalance(node) {
-
-    if (!node) return undefined;
-
-    const { left, right } = node;
-
-    return (right ? right.height : 0) - (left ? left.height : 0);
-}
-
-/**
- * Sets the left child of node to the node supplied.
- * 
- * @param {Node} node the target node to have left child assigned
- * @param {Node|''} leftChild the node to become the left child or empty value to clear
- */
-export function setLeftChild(node, leftChild) {
-
-    if (!node) return;
-
-    if (leftChild) {
-        leftChild.parent = node;
-    }
-
-    node.left = leftChild;
-
-    updateHeight(node);
-}
-
-/**
- * Sets the right child of node to the node supplied.
- * 
- * @param {Node} node the target node to have right child assigned
- * @param {Node|''} rightChild the node to become the right child or empty value to clear
- */
-export function setRightChild(node, rightChild) {
-
-    if (!node) return;
-
-    if (rightChild) {
-        rightChild.parent = node;
-    }
-
-    node.right = rightChild;
-
-    updateHeight(node);
-}
-
-export function replaceChild(node, currentChild, newChild) {
-
-    if (currentChild === undefined) { return; }
-
-    if (node.left === currentChild) {
-        setLeftChild(node, newChild);
-    }
-
-    if (node.right === currentChild) {
-        setRightChild(node, newChild);
     }
 }
