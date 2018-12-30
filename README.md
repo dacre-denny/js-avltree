@@ -6,10 +6,7 @@
     <a href="https://coveralls.io/github/dacre-denny/js-avltree?branch=master">
         <img src="https://coveralls.io/repos/github/dacre-denny/js-avltree/badge.svg?branch=master" alt="Coverage Status">
     </a>
-    <a href="https://www.npmjs.com/package/sequmise">
-        <img src="https://img.shields.io/npm/dm/sequmise.svg" alt="Downloads">
-    </a>
-    <a href="https://app.codacy.com/app/dacre-denny/js-avltree?utm_source=github.com&utm_medium=referral&utm_content=dacre-denny/js-avltree&utm_campaign=Badge_Grade_Dashboard">
+    <a class="badge-align" href="https://www.codacy.com/app/dacre-denny/js-avltree?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=dacre-denny/js-avltree&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/9593a982ff19457986e66f0907db5b5f"/></a>
 </p>
 
 <p align="center"><a href="https://en.wikipedia.org/wiki/AVL_tree">Implementation of the AVL tree</a> in JavaScript.</p>
