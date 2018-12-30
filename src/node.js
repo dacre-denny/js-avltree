@@ -5,17 +5,17 @@ export function rotateRight(node) {
     if (!left) { return node; }
 
     // if single rotation case
-    if (left.getBalance() < 0) {
+    if (getBalance(left) < 0) {
 
         if (parent) {
-            parent.replaceChild(node, left);
+            replaceChild(parent, node, left);
         }
         else {
             left.parent = "";
         }
 
-        node.setLeft(left.right);
-        left.setRight(node);
+        setLeftChild(node, left.right);
+        setRightChild(left, node);
 
         // return the replacement of node in the tree
         return left;
@@ -26,17 +26,17 @@ export function rotateRight(node) {
         const leftRight = left.right;
 
         if (parent) {
-            parent.replaceChild(node, leftRight);
+            replaceChild(parent, node, leftRight);
         }
         else {
             leftRight.parent = "";
         }
 
-        left.setRight(leftRight.left);
-        node.setLeft(leftRight.right);
+        setRightChild(left, leftRight.left);
+        setLeftChild(node, leftRight.right);
 
-        leftRight.setLeft(left);
-        leftRight.setRight(node);
+        setLeftChild(leftRight, left);
+        setRightChild(leftRight, node);
 
 
         return leftRight;
@@ -48,17 +48,17 @@ export function rotateLeft(node) {
     const { parent, right } = node;
 
     // if single rotation case
-    if (right.getBalance() > 0) {
+    if (getBalance(right) > 0) {
 
         if (parent) {
-            parent.replaceChild(node, right);
+            replaceChild(parent, node, right);
         }
         else {
             right.parent = "";
         }
 
-        node.setRight(right.left);
-        right.setLeft(node);
+        setRightChild(node, right.left);
+        setLeftChild(right, node);
 
         // return the replacement of node in the tree
         return right;
@@ -69,17 +69,17 @@ export function rotateLeft(node) {
         const rightLeft = right.left;
 
         if (parent) {
-            parent.replaceChild(node, rightLeft);
+            replaceChild(parent, node, rightLeft);
         }
         else {
             rightLeft.parent = "";
         }
 
-        right.setLeft(rightLeft.right);
-        node.setRight(rightLeft.left);
+        setLeftChild(right, rightLeft.right);
+        setRightChild(node, rightLeft.left);
 
-        rightLeft.setRight(right);
-        rightLeft.setLeft(node);
+        setRightChild(rightLeft, right);
+        setLeftChild(rightLeft, node);
 
         return rightLeft;
     }
@@ -87,7 +87,7 @@ export function rotateLeft(node) {
 
 export function rotateIfNeeded(node) {
 
-    const balance = node.getBalance();
+    const balance = getBalance(node);
 
     if (balance < -1) {
         return rotateRight(node);
@@ -100,224 +100,244 @@ export function rotateIfNeeded(node) {
     }
 }
 
-export class Node {
+/**
+ * Inserts the specified value into the tree
+ * 
+ * @param {Node} root root of the tree if it exists
+ * @param {any} value to be inserted
+ * @returns {Node} tree root
+ */
+export function insertValue(root, value) {
 
-    constructor(value) {
+    var newNode = {
+        value: value,
+        left: "",
+        right: "",
+        height: 1,
+        parent: ""
+    };
 
-        this.value = value;
-        this.left = "";
-        this.right = "";
-        this.height = 1;
-        this.parent = "";
+    if (!root) {
+        return newNode;
     }
 
-    updateLevel() {
+    var node = root;
+    for (; ;) {
 
-        const { left, right } = this;
-
-        this.height = Math.max(left ? left.height : 0, right ? right.height : 0) + 1;
-    }
-
-    getBalance() {
-
-        const { left, right } = this;
-
-        return (right ? right.height : 0) - (left ? left.height : 0);
-    }
-
-    setLeft(node) {
-
-        if (node) {
-            node.parent = this;
-        }
-
-        this.left = node;
-
-        this.updateLevel();
-    }
-
-    setRight(node) {
-
-        if (node) {
-            node.parent = this;
-        }
-
-        this.right = node;
-
-        this.updateLevel();
-    }
-
-    replaceChild(currentChild, newChild) {
-
-        if (currentChild === undefined) { return; }
-
-        if (this.left === currentChild) {
-            this.setLeft(newChild);
-        }
-
-        if (this.right === currentChild) {
-            this.setRight(newChild);
-        }
-    }
-
-    /**
-     * Inserts the specified value into the tree
-     * 
-     * @param {any} value to be inserted
-     * @returns {Node} node for the inserted value
-     */
-    insertValue(value) {
-
-        var newNode = new Node(value);
-        var node = this;
-        for (; ;) {
-
-            if (value <= node.value) {
-                if (node.left) {
-                    node = node.left;
-                }
-                else {
-                    node.setLeft(newNode);
-                    break;
-                }
+        if (value <= node.value) {
+            if (node.left) {
+                node = node.left;
             }
             else {
-
-                if (node.right) {
-                    node = node.right;
-                }
-                else {
-                    node.setRight(newNode);
-                    break;
-                }
-            }
-        }
-
-        // Traverse up the tree to root, applying rotations as needed
-        for (node = newNode; node;) {
-
-            node.updateLevel();
-            node = rotateIfNeeded(node);
-
-            if (node.parent) {
-                node = node.parent;
-            }
-            else {
+                setLeftChild(node, newNode);
                 break;
             }
         }
+        else {
 
-        return node;
+            if (node.right) {
+                node = node.right;
+            }
+            else {
+                setRightChild(node, newNode);
+                break;
+            }
+        }
     }
 
-    /**
-     * Removes the value from the tree if it exists
-     * 
-     * @param {any} value value to be removed
-     * @returns {Node|""} this node instance, or the instance that replaces it as a result of the remove operation
-     */
-    removeValue(value) {
+    // Traverse up the tree to root, applying rotations as needed
+    for (node = newNode; node;) {
 
-        for (var node = this; node;) {
+        updateHeight(node);
+        node = rotateIfNeeded(node);
 
-            if (value === node.value) {
+        if (node.parent) {
+            node = node.parent;
+        }
+        else {
+            break;
+        }
+    }
 
-                const { right, left, parent } = node;
+    return node;
+}
 
-                if (right) {
+/**
+ * Removes the value from the tree if it exists
+ * 
+ * @param {Node} root root of the tree if it exists
+ * @param {any} value value to be removed
+ * @returns {Node|""} this node instance, or the instance that replaces it as a result of the remove operation
+ */
+export function removeValue(root, value) {
 
-                    let nextNode = right;
+    if (!root) {
+        return "";
+    }
 
-                    // find node of next value that will replace this node
-                    while (nextNode.left) { nextNode = nextNode.left; }
+    for (var node = root; node;) {
 
-                    if (nextNode !== right) {
+        if (value === node.value) {
 
-                        // Remove nextNode from it's subtree
-                        nextNode.parent.replaceChild(nextNode.right, nextNode);
+            const { right, left, parent } = node;
 
-                        nextNode.setRight(right);
-                    }
-                    else {
-                        nextNode.setRight(right.right);
-                    }
+            if (right) {
 
-                    nextNode.setLeft(left);
+                let nextNode = right;
 
-                    if (parent) {
-                        parent.replaceChild(node, nextNode);
-                    }
-                    else {
-                        nextNode.parent = "";
-                    }
+                // find node of next value that will replace this node
+                while (nextNode.left) { nextNode = nextNode.left; }
 
-                    // Walk back up tree on replacement node (nextNode)
-                    node = nextNode;
-                }
-                else if (left) {
+                if (nextNode !== right) {
 
-                    if (parent) {
-                        parent.replaceChild(node, left);
-                        node = parent;
-                    }
+                    // Remove nextNode from it's subtree
+                    replaceChild(nextNode.parent, nextNode.right, nextNode);
+
+                    setRightChild(nextNode, right);
                 }
                 else {
-
-                    if (parent) {
-                        parent.replaceChild(node, "");
-                        node = parent;
-                    }
-                    else {
-                        node = ""; // node is the root existing on it's own so clear it
-                    }
+                    setRightChild(nextNode, right.right);
                 }
 
-                // Traverse up the tree to root, applying rotations as needed
-                for (; node;) {
-                    node.updateLevel();
-                    node = rotateIfNeeded(node);
+                setLeftChild(nextNode, left);
 
-                    if (node.parent) {
-                        node = node.parent;
-                    }
-                    else {
-                        break;
-                    }
+                if (parent) {
+                    replaceChild(parent, node, nextNode);
+                }
+                else {
+                    nextNode.parent = "";
                 }
 
-                // Return root, current or replaced
-                return node;
+                // Walk back up tree on replacement node (nextNode)
+                node = nextNode;
             }
-            else if (value < node.value) {
-                node = node.left;
+            else if (left) {
+
+                if (parent) {
+                    replaceChild(parent, node, left);
+                    node = parent;
+                }
             }
             else {
-                node = node.right;
-            }
-        }
 
-        //return root node
-        return this;
+                if (parent) {
+                    replaceChild(parent, node, "");
+                    node = parent;
+                }
+                else {
+                    node = ""; // node is the root existing on it's own so clear it
+                }
+            }
+
+            // Traverse up the tree to root, applying rotations as needed
+            for (; node;) {
+                updateHeight(node);
+                node = rotateIfNeeded(node);
+
+                if (node.parent) {
+                    node = node.parent;
+                }
+                else {
+                    break;
+                }
+            }
+
+            // Return root, current or replaced
+            return node;
+        }
+        else if (value < node.value) {
+            node = node.left;
+        }
+        else {
+            node = node.right;
+        }
     }
 
-    /**
-     * Searchs tree for node with matching value
-     * @param {any} value value to match node on
-     * @returns {Node|undefined} the node instance with matching value or undefined if no match found
-     */
-    findValue(value) {
+    //return root node
+    return root;
+}
 
-        for (var node = this; node;) {
+/**
+ * Searchs tree for node with matching value
+ * 
+ * @param {Node} root root of the tree if it exists
+ * @param {any} value value to match node on
+ * @returns {Node|undefined} the node instance with matching value or undefined if no match found
+ */
+export function findValue(root, value) {
 
-            if (value === node.value) {
-                return node;
-            }
-            else if (value < node.value) {
-                node = node.left;
-            }
-            else {
-                node = node.right;
-            }
+    if (!root || value === undefined) {
+        return undefined;
+    }
+
+    for (var node = root; node;) {
+
+        if (value === node.value) {
+            return node;
         }
+        else if (value < node.value) {
+            node = node.left;
+        }
+        else {
+            node = node.right;
+        }
+    }
+}
+
+/**
+ * Recalculates and updates the height of the specified node based on left and right child heights
+ * @param {Node} node the node to update the height of
+ */
+export function updateHeight(node) {
+
+    const { left, right } = node;
+
+    node.height = Math.max(left ? left.height : 0, right ? right.height : 0) + 1;
+}
+
+/**
+ * Returns the balance metric of the subtree at the specified node
+ * @param {Node} node the node to calculate balance of
+ * @return {number} balance of the supplied node
+ */
+export function getBalance(node) {
+
+    const { left, right } = node;
+
+    return (right ? right.height : 0) - (left ? left.height : 0);
+}
+
+export function setLeftChild(node, leftNode) {
+
+    if (leftNode) {
+        leftNode.parent = node;
+    }
+
+    node.left = leftNode;
+
+    updateHeight(node);
+}
+
+export function setRightChild(node, rightNode) {
+
+    if (rightNode) {
+        rightNode.parent = node;
+    }
+
+    node.right = rightNode;
+
+    updateHeight(node);
+}
+
+export function replaceChild(node, currentChild, newChild) {
+
+    if (currentChild === undefined) { return; }
+
+    if (node.left === currentChild) {
+        setLeftChild(node, newChild);
+    }
+
+    if (node.right === currentChild) {
+        setRightChild(node, newChild);
     }
 }

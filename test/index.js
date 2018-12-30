@@ -771,41 +771,35 @@ describe("Tree module", () => {
         });
     });
 
-    describe("tests", () => {
+    describe("known simulations", () => {
 
-        const tree = new Tree();
+        it("should fill up will values and empty when values are subsequently removed", () => {
 
-        function checkIntegrity(node) {
+            const values = [];
+            for (let i = 0; i < 1000; i++) {
+                values.push(i);
+            }
 
-            const lVal = node.left ? node.left.value : undefined;
-            const rVal = node.right ? node.right.value : undefined;
-            const ok = (lVal === undefined ? true : lVal < node.value) && (rVal === undefined ? true : node.value < rVal);
+            const tree = new Tree();
 
-            console.log(`${ok ? "OK" : "FAIL"} : ${lVal === undefined ? "" : lVal + " < "}${node.value}${rVal === undefined ? "" : "< " + rVal}`);
+            for (let value of values) {
 
-            if (node.left) checkIntegrity(node.left);
-            if (node.right) checkIntegrity(node.right);
-        }
+                tree.insert(value);
+            }
 
-        for (var i = 0; i < 10; i++) {
+            assert.isDefined(tree.root);
+            assert.isAbove(tree.root.height, 0);
 
-            tree.insert(i);
+            for (let value of values) {
+                assert.isDefined(tree.find(value));
+            }
 
-            checkIntegrity(tree.root);
-            console.log("--------------");
+            for (let value of values) {
 
-            //console.log("added node:", i, "tree height:", tree.root.height);
-        }
+                tree.remove(value);
+            }
 
-        for (var j = 0; j < 10; j++) {
-
-            tree.remove(j);
-
-            checkIntegrity(tree.root);
-            console.log("--------------");
-
-            console.log("removed node:", j, "tree height:", tree.root.height);
-        }
-
+            assert.equal(tree.root, "");
+        });
     });
 });

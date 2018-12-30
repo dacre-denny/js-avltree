@@ -1,4 +1,4 @@
-import { Node } from "./node";
+import { insertValue, removeValue, findValue } from "./node";
 
 export class Tree {
 
@@ -12,20 +12,20 @@ export class Tree {
 
         const { root } = this;
 
-        this.root = root ? root.insertValue(value) : new Node(value);
+        this.root = insertValue(root, value);
     }
 
     remove(value) {
 
         const { root } = this;
 
-        this.root = root ? root.removeValue(value) : "";
+        this.root = removeValue(root, value);
     }
 
     find(value) {
 
         const { root } = this;
 
-        return value !== undefined && root ? root.findValue(value) : undefined;
+        return findValue(root, value);
     }
 }
