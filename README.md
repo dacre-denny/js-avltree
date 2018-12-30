@@ -11,7 +11,8 @@
     </a>
     <a href="https://app.codacy.com/app/dacre-denny/js-avltree?utm_source=github.com&utm_medium=referral&utm_content=dacre-denny/js-avltree&utm_campaign=Badge_Grade_Dashboard">
 </p>
-<p align="center">Implementation of the <a href="https://en.wikipedia.org/wiki/AVL_tree">AVL tree</a> in JavaScript.</p>
+
+<p align="center"><a href="https://en.wikipedia.org/wiki/AVL_tree">Implementation of the AVL tree</a> in JavaScript.</p>
 
 ---
 
