@@ -6,7 +6,9 @@
   "scripts": {
     "demo": "node ./dist/bundle.js",
     "watch": "webpack --watch",
-    "test": "mocha --require @babel/register"
+    "test": "mocha --require @babel/register",
+    "cover": "istanbul cover _mocha",
+    "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls"
   },
   "author": "Dacre Denny",
   "license": "MIT",
@@ -15,6 +17,8 @@
     "@babel/preset-env": "^7.2.3",
     "@babel/register": "^7.0.0",
     "chai": "^4.2.0",
+    "coveralls": "^3.0.2",
+    "istanbul": "1.1.0-alpha.1",
     "mocha": "^5.2.0",
     "webpack": "^4.28.1",
     "webpack-cli": "^3.1.2"
