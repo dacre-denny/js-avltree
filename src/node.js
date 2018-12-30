@@ -297,6 +297,8 @@ export function findValue(root, value) {
  */
 export function updateHeight(node) {
 
+    if (!node) return;
+
     const { left, right } = node;
 
     node.height = Math.max(left ? left.height : 0, right ? right.height : 0) + 1;
