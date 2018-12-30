@@ -3,5 +3,5 @@ export const createNode = (value) => ({
     left: "",
     right: "",
     parent: "",
-    value: value
+    value
 });

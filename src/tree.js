@@ -8,7 +8,7 @@ export class Tree {
 
     insert(value) {
 
-        if (value === undefined) return;
+        if (typeof value === "undefined") { return; }
 
         this.root = insertValue(this.root, value);
     }

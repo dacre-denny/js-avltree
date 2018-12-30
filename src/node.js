@@ -6,7 +6,7 @@
  */
 export function getBalance(node) {
 
-    if (!node) return undefined;
+    if (!node) { return; }
 
     const { left, right } = node;
 
@@ -20,7 +20,7 @@ export function getBalance(node) {
  */
 export function updateHeight(node) {
 
-    if (!node) return;
+    if (!node) { return; }
 
     const { left, right } = node;
 
@@ -35,7 +35,7 @@ export function updateHeight(node) {
  */
 export function setLeftChild(node, leftChild) {
 
-    if (!node) return;
+    if (!node) { return; }
 
     if (leftChild) {
         leftChild.parent = node;
@@ -54,7 +54,7 @@ export function setLeftChild(node, leftChild) {
  */
 export function setRightChild(node, rightChild) {
 
-    if (!node) return;
+    if (!node) { return; }
 
     if (rightChild) {
         rightChild.parent = node;
@@ -68,7 +68,7 @@ export function setRightChild(node, rightChild) {
 export function replaceChild(node, currentChild, newChild) {
 
     // An ambiguous case that cannot be resolved
-    if (!currentChild) return;
+    if (!currentChild) { return; }
 
     if (node.left === currentChild) {
         setLeftChild(node, newChild);
@@ -189,8 +189,10 @@ export function rotateIfNeeded(node) {
  */
 export function insertValue(root, value) {
 
+    if (typeof value !== "number") { return root; }
+
     var newNode = {
-        value: value,
+        value,
         left: "",
         right: "",
         height: 1,
@@ -353,8 +355,8 @@ export function removeValue(root, value) {
  */
 export function findValue(root, value) {
 
-    if (!root || value === undefined) {
-        return undefined;
+    if (!root || typeof value === "undefined") {
+        return;
     }
 
     for (var node = root; node;) {

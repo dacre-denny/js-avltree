@@ -12,6 +12,23 @@ describe("Tree module", () => {
 
     describe("insert", () => {
 
+        it("should do nothing if non-number value inserted", () => {
+
+            const tree = new Tree();
+
+            tree.insert();
+            assert.equal(tree.root, "");
+
+            tree.insert("");
+            assert.equal(tree.root, "");
+
+            tree.insert(null);
+            assert.equal(tree.root, "");
+
+            tree.insert("foo");
+            assert.equal(tree.root, "");
+        });
+
         it("should insert first value at root of empty tree", () => {
 
             const tree = new Tree();
