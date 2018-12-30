@@ -1,6 +1,6 @@
 var { assert } = require("chai");
 var { createNode } = require("./helpers");
-var { getBalance, updateHeight } = require("../src/node");
+var { getBalance, updateHeight, setLeftChild, setRightChild } = require("../src/node");
 
 describe("Node module", () => {
 
@@ -65,12 +65,12 @@ describe("Node module", () => {
 
         it("should do nothing if invalid node passed", () => {
 
-            assert.isUndefined(updateHeight(""));
-            assert.isUndefined(updateHeight(null));
-            assert.isUndefined(updateHeight());
+            updateHeight("");
+            updateHeight(null);
+            updateHeight();
         });
 
-        it("should update nodes height to 1 if node is leaf node", () => {
+        it("should update node's height to 1 if node is leaf node", () => {
 
             const node = createNode(2);
 
@@ -79,7 +79,7 @@ describe("Node module", () => {
             assert.equal(node.height, 1);
         });
 
-        it("should update nodes height to right child plus 1 if node has right child and no left child", () => {
+        it("should update node's height to right child plus 1 if node has right child and no left child", () => {
 
             const right = createNode(2);
             const node = createNode(1);
@@ -94,7 +94,7 @@ describe("Node module", () => {
             assert.equal(node.height, 4);
         });
 
-        it("should update nodes height to left child plus 1 if node has left child and no right child", () => {
+        it("should update node's height to left child plus 1 if node has left child and no right child", () => {
 
             const left = createNode(2);
             const node = createNode(1);
@@ -109,7 +109,7 @@ describe("Node module", () => {
             assert.equal(node.height, 6);
         });
 
-        it("should update nodes height to maximum child height plus 1 if node has left child and right child", () => {
+        it("should update node's height to maximum child height plus 1 if node has left child and right child", () => {
 
             const left = createNode(2);
             const right = createNode(3);
@@ -134,6 +134,98 @@ describe("Node module", () => {
             updateHeight(node);
 
             assert.equal(node.height, 10);
+        });
+    });
+
+    describe("setLeftChild", () => {
+
+        it("should do nothing if invalid node passed", () => {
+
+            setLeftChild("");
+            setLeftChild(null);
+            setLeftChild();
+        });
+
+        it("should clear node's left child when invalid left child supplied", () => {
+
+            const node = createNode(2);
+            const left = createNode(1);
+
+            node.left = left;
+            node.height = 1;
+            left.parent = node;
+
+            setLeftChild(node, "");
+
+            assert.equal(node.right, "");
+            assert.equal(node.left, "");
+            assert.equal(node.height, 1);
+        });
+
+        it("should replace node's left child when valid left child supplied", () => {
+
+            const node = createNode(2);
+            const left = createNode(1);
+            const leftReplacment = createNode(0);
+
+            node.left = left;
+            node.height = 2;
+            left.parent = node;
+            leftReplacment.height = 4;
+
+            setLeftChild(node, leftReplacment);
+
+            assert.equal(node.right, "");
+            assert.equal(node.left, leftReplacment);
+            assert.equal(node.height, 5);
+
+            assert.equal(leftReplacment.parent, node);
+        });
+    });
+
+    describe("setRightChild", () => {
+
+        it("should do nothing if invalid node passed", () => {
+
+            setRightChild("");
+            setRightChild(null);
+            setRightChild();
+        });
+
+        it("should clear node's right child when invalid right child supplied", () => {
+
+            const node = createNode(2);
+            const right = createNode(1);
+
+            node.right = right;
+            node.height = 1;
+            right.parent = node;
+
+            setRightChild(node, "");
+
+            assert.equal(node.left, "");
+            assert.equal(node.right, "");
+            assert.equal(node.height, 1);
+        });
+
+        it("should replace node's right child when valid right child supplied", () => {
+
+            const node = createNode(1);
+            const right = createNode(2);
+            const rightReplacement = createNode(3);
+
+            node.right = right;
+            node.height = 3;
+            right.parent = node;
+            rightReplacement.height = 8;
+
+            setRightChild(node, rightReplacement);
+
+            assert.equal(node.left, "");
+            assert.equal(node.right, rightReplacement);
+            assert.equal(node.height, 9);
+
+            assert.equal(rightReplacement.parent, node);
         });
     });
 });

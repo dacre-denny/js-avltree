@@ -319,24 +319,40 @@ export function getBalance(node) {
     return (right ? right.height : 0) - (left ? left.height : 0);
 }
 
-export function setLeftChild(node, leftNode) {
+/**
+ * Sets the left child of node to the node supplied.
+ * 
+ * @param {Node} node the target node to have left child assigned
+ * @param {Node|''} leftChild the node to become the left child or empty value to clear
+ */
+export function setLeftChild(node, leftChild) {
 
-    if (leftNode) {
-        leftNode.parent = node;
+    if (!node) return;
+
+    if (leftChild) {
+        leftChild.parent = node;
     }
 
-    node.left = leftNode;
+    node.left = leftChild;
 
     updateHeight(node);
 }
 
-export function setRightChild(node, rightNode) {
+/**
+ * Sets the right child of node to the node supplied.
+ * 
+ * @param {Node} node the target node to have right child assigned
+ * @param {Node|''} rightChild the node to become the right child or empty value to clear
+ */
+export function setRightChild(node, rightChild) {
 
-    if (rightNode) {
-        rightNode.parent = node;
+    if (!node) return;
+
+    if (rightChild) {
+        rightChild.parent = node;
     }
 
-    node.right = rightNode;
+    node.right = rightChild;
 
     updateHeight(node);
 }
