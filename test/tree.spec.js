@@ -773,17 +773,18 @@ describe("Tree module", () => {
 
     describe("known simulations", () => {
 
-        it("should fill up will values and empty when values are subsequently removed", () => {
+        it("should fill up will values and empty when values removed in same order", () => {
 
+            const COUNT = 1000;
             const values = [];
-            for (let i = 0; i < 1000; i++) {
+
+            for (let i = 0; i < COUNT; i++) {
                 values.push(i);
             }
 
             const tree = new Tree();
 
             for (let value of values) {
-
                 tree.insert(value);
             }
 
@@ -795,7 +796,35 @@ describe("Tree module", () => {
             }
 
             for (let value of values) {
+                tree.remove(value);
+            }
 
+            assert.equal(tree.root, "");
+        });
+
+        it("should fill up with values and empty when values removed in reverse order", () => {
+
+            const COUNT = 1000;
+            const values = [];
+
+            for (let i = 0; i < COUNT; i++) {
+                values.push(i);
+            }
+
+            const tree = new Tree();
+
+            for (let value of values) {
+                tree.insert(value);
+            }
+
+            assert.isDefined(tree.root);
+            assert.isAbove(tree.root.height, 0);
+
+            for (let value of values) {
+                assert.isDefined(tree.find(value));
+            }
+
+            for (let value of values.reverse()) {
                 tree.remove(value);
             }
 

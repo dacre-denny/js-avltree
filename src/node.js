@@ -217,6 +217,12 @@ export function removeValue(root, value) {
                     replaceChild(parent, node, left);
                     node = parent;
                 }
+                else {
+
+                    // no parent, so left becomes new root for tree
+                    node = left;
+                    node.parent = "";
+                }
             }
             else {
 
@@ -286,6 +292,7 @@ export function findValue(root, value) {
 
 /**
  * Recalculates and updates the height of the specified node based on left and right child heights
+ * 
  * @param {Node} node the node to update the height of
  */
 export function updateHeight(node) {
@@ -297,10 +304,13 @@ export function updateHeight(node) {
 
 /**
  * Returns the balance metric of the subtree at the specified node
+ * 
  * @param {Node} node the node to calculate balance of
  * @return {number} balance of the supplied node
  */
 export function getBalance(node) {
+
+    if (!node) return undefined;
 
     const { left, right } = node;
 
